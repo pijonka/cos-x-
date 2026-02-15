@@ -1,0 +1,16 @@
+body {
+    display: flex;
+    height: 100vh;
+}
+
+#graph {
+    width: 50%;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+#controls {
+    width: 50%;
+    background-color: rgb(209, 209, 209);
+    box-sizing: border-box;
+}
