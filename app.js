@@ -1,8 +1,17 @@
 
 // Declare user variables with standard values
-let freq = (document.getElementById('freq')).value;
+let freq = document.getElementById('freq');
+let amp = document.getElementById('amp');
 
+// f(x) implementation
 
+function f() {
+    document.getElementById('f(x)').textContent = 'f(x) = ' + amp.value + "sin(" + freq.value + "x)";
+}
+f();
+
+freq.addEventListener('input', f);
+amp.addEventListener('input', f);
 
 // when the user clicks the start button
 let startButton = (document.getElementById('startButton'));
@@ -13,10 +22,15 @@ startButton.addEventListener('click', () => {
     // Create the oscillator
     const oscillator = audioContext.createOscillator();
 
-    // Set the frequency on the oscillator
-    oscillator.frequency.value = freq;
+    // Set the frequency for the oscillator
+    oscillator.frequency.value = freq.value;
 
-    oscillator.connect(audioContext.destination);
+    // Set the amplitude for the oscillator
+    const gainNode = audioContext.createGain();
+    gainNode.gain.setValueAtTime(1, audioContext.currentTime);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
     oscillator.start();
 
 
