@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>cos(x)</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,25 +11,11 @@
             <canvas id="oscilloscope"></canvas>
         </div>
         <div id="controls">
-            <h1>Controls</h1>
-            <p id="f(x)">f(x) = </p>
-            <div>
-                <label for="freq">Frequency (hz)/pitch: </label>
-                <input id="freq" type="text" value="440"></input>
+            <nav id="tabBar"><button id="newTabButton">+</button></nav>
+           <div id="tabs">
+                
             </div>
-
-            <div>
-                <label for="amp">Amplitude/volume: </label>
-                <input id="amp" type="text" value="1">
-            </div>
-
-            <div>
-                <label for="phase">Phase</label>
-                <input id="phase" type="text" value="0">
-            </div>
-
-            <button id="startButton">Start</button>
-        </div>
+        </div> 
 
         <script src="app.js"></script>
 </body>

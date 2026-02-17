@@ -9,6 +9,12 @@ body {
     box-sizing: border-box;
 }
 
+#oscilloscope {
+    width: 100%;
+    box-sizing: border-box;
+    height: 100vh;
+}
+
 #controls {
     width: 50%;
     background-color: rgb(209, 209, 209);
