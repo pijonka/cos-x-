@@ -1,9 +1,15 @@
 // all the tabs
 const tabsContainer = document.getElementById('tabs');
 
-// one specific instance of a tab
-const newTab = document.createElement('div');
-newTab.innerHTML = `
+// array which carries the data for all the tabs 
+const tabArray = [];
+
+// creates one instance of a tab
+function makeTabObj() {
+
+
+    const newTab = document.createElement('div');
+    newTab.innerHTML = `
                 <h1>Controls</h1>
                 <p id="f(x)">f(x) = </p>
                 <div>
@@ -22,20 +28,42 @@ newTab.innerHTML = `
                 </div>
 
                 <button id="activeButton">Start</button>
-`;
-// make at least one new tab
-tabsContainer.appendChild(newTab);
+    `;
+
+    let freqInput = newTab.querySelector('#freq');
+    let ampInput = newTab.querySelector('#amp');
+
+    const obj = {
+        freq: 440,
+        amp: 1,
+        active: false,
+        activeButton: document.getElementById('activeButton'),
+        htmlElement: newTab.innerHtml,
+        oscillator: null
+
+    }
+    
+    return obj;
+}
+
+const firstTab = makeTabObj();
+tabArray.push(firstTab);
+tabsContainer.appendChild(firstTab.htmlElement);
+
 
 // get the new tab button
 const newTabButton = document.getElementById('newTabButton');
 
 // if user wants new tab
 newTabButton.addEventListener('click', () => {
-    const tabBar = document.getElementById('tabBar');
-    // const tabArray = get children of tabs
     // give them a new tab
+    
+    makeTabObj();
+    tabArray.push(makeTabObj());
     tabsContainer.appendChild(newTab);
+
     // switch through tab states using the tabBar
+    const tabBar = document.getElementById('tabBar');
     
 })
 
@@ -135,42 +163,6 @@ function killWave() {
     activeButton.textContent = inactiveButtonLabel;
 
 }
-
-// define an active and inactive state
-let active = false;
-
-// button that toggles active/inactive state
-let activeButton = (document.getElementById('activeButton'));
-
-// active and inactive button labels
-const activeButtonLabel = "Stop";
-const inactiveButtonLabel = "Start";
-
-const tabArray = [
-    
-]
-
-let freq = document.getElementById('freq');
-let amp = document.getElementById('amp');
-
-
-freq.addEventListener('input', f);
-amp.addEventListener('input', f);
-
-activeButton.addEventListener('click', () => {
-    active = !active
-    if(active) {
-
-        createWave();
-
-    } else {
-
-        killWave();
-
-    } // if
-
-}); // addEventListener
-
 
 // function calling
 f();
