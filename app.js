@@ -7,11 +7,11 @@ const tabArray = [];
 // creates one instance of a tab
 function makeTabObj() {
 
-
+    // create a new tab element with html
     const newTab = document.createElement('div');
     newTab.innerHTML = `
                 <h1>Controls</h1>
-                <p id="f(x)">f(x) = </p>
+                <p id="f">f(x) = </p>
                 <div>
                     <label for="freq">Frequency (hz)/pitch: </label>
                     <input id="freq" type="text" value="440"></input>
@@ -30,18 +30,36 @@ function makeTabObj() {
                 <button id="activeButton">Start</button>
     `;
 
+    // retrieve html input
     let freqInput = newTab.querySelector('#freq');
+    //ADDEVENTLISTENERS?
+    freqInput.addEventListener('input', () => {
+        freqInput = newTab.querySelector('#freq');
+    });
     let ampInput = newTab.querySelector('#amp');
-
-    const obj = {
+    //ADDEVENTLISTENERS?
+    ampInput.addEventListener('input', () => {
+        ampInput = newTab.querySelector('#amp');
+    })
+    
+    let obj = {
         freq: freqInput,
         amp: ampInput,
         active: false,
-        activeButton: newTab.querySelector('activeButton'),
+        activeButton: newTab.querySelector('#activeButton'),
         htmlElement: newTab,
         oscillator: null
-
+        
     }
+    
+    // f(x) implementation
+    // (having this be a function, especially with a parameter, is absolutely redunant, but looks cool)
+    function f(x) {
+        let formula = newTab.querySelector('#f');
+        formula.textContent = 'f(x) = ' + ampInput.value + 'sin(' + freqInput.value + 'x)'
+        return x;
+    }
+    f(0);
     
     return obj;
 }
@@ -60,20 +78,11 @@ const newTabButton = document.getElementById('newTabButton');
 newTabButton.addEventListener('click', () => {
     // give them a new tab
     makeNewTab();
-
+    
     // switch through tab states using the tabBar
     const tabBar = document.getElementById('tabBar');
     
 })
-
-// f(x) implementation
-
-function f() {
-    document.getElementById('f(x)').textContent = 'f(x) = ' + amp.value + "sin(" + freq.value + "x)";
-}
-
-// declare an oscillator so that the inactive state doesn't freak out
-let oscillator;
 
 // creates an audio context with an oscillator that outputs a specified sound wave and draws it out as a sine wave
 function createWave() {
@@ -164,6 +173,5 @@ function killWave() {
 }
 
 // function calling
-f();
 createWave();
 killWave();
