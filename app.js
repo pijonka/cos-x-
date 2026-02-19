@@ -34,11 +34,11 @@ function makeTabObj() {
     let ampInput = newTab.querySelector('#amp');
 
     const obj = {
-        freq: 440,
-        amp: 1,
+        freq: freqInput,
+        amp: ampInput,
         active: false,
-        activeButton: document.getElementById('activeButton'),
-        htmlElement: newTab.innerHtml,
+        activeButton: newTab.querySelector('activeButton'),
+        htmlElement: newTab,
         oscillator: null
 
     }
@@ -46,10 +46,12 @@ function makeTabObj() {
     return obj;
 }
 
-const firstTab = makeTabObj();
-tabArray.push(firstTab);
-tabsContainer.appendChild(firstTab.htmlElement);
-
+function makeNewTab() {
+    const newTab = makeTabObj();
+    tabArray.push(newTab);
+    tabsContainer.appendChild(newTab.htmlElement);
+}
+makeNewTab();
 
 // get the new tab button
 const newTabButton = document.getElementById('newTabButton');
@@ -57,10 +59,7 @@ const newTabButton = document.getElementById('newTabButton');
 // if user wants new tab
 newTabButton.addEventListener('click', () => {
     // give them a new tab
-    
-    makeTabObj();
-    tabArray.push(makeTabObj());
-    tabsContainer.appendChild(newTab);
+    makeNewTab();
 
     // switch through tab states using the tabBar
     const tabBar = document.getElementById('tabBar');
