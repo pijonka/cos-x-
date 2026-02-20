@@ -32,15 +32,9 @@ function makeTabObj() {
 
     // retrieve html input
     let freqInput = newTab.querySelector('#freq');
-    //ADDEVENTLISTENERS?
-    freqInput.addEventListener('input', () => {
-        freqInput = newTab.querySelector('#freq');
-    });
+    freqInput.addEventListener('input', () => {freqInput = newTab.querySelector('#freq');});
     let ampInput = newTab.querySelector('#amp');
-    //ADDEVENTLISTENERS?
-    ampInput.addEventListener('input', () => {
-        ampInput = newTab.querySelector('#amp');
-    })
+    ampInput.addEventListener('input', () => {ampInput = newTab.querySelector('#amp');});
     
     let obj = {
         freq: freqInput,
@@ -56,10 +50,18 @@ function makeTabObj() {
     // (having this be a function, especially with a parameter, is absolutely redunant, but looks cool)
     function f(x) {
         let formula = newTab.querySelector('#f');
-        formula.textContent = 'f(x) = ' + ampInput.value + 'sin(' + freqInput.value + 'x)'
+        formula.textContent = 'f(x) = ' + obj.amp.value + 'sin(' + obj.freq.value + 'x)'
+        freqInput.addEventListener('input', () => {
+            formula.textContent = 'f(x) = ' + obj.amp.value + 'sin(' + obj.freq.value + 'x)'
+        })
+        ampInput.addEventListener('input', () => {
+            formula.textContent = 'f(x) = ' + obj.amp.value + 'sin(' + obj.freq.value + 'x)'
+        })
+
         return x;
     }
     f(0);
+
     
     return obj;
 }
