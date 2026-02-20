@@ -44,7 +44,7 @@ function makeTabObj() {
     let ampInput = newTab.querySelector('#amp');
     ampInput.addEventListener('input', () => {ampInput = newTab.querySelector('#amp');});
 
-    let obj = {
+    let tabObj = {
         freq: freqInput,
         amp: ampInput,
         active: false,
@@ -61,12 +61,12 @@ function makeTabObj() {
     // (having this be a function, especially with a parameter, is absolutely redunant, but looks cool)
     function f(x) {
         let formula = newTab.querySelector('#f');
-        formula.textContent = 'f(x) = ' + obj.amp.value + 'sin(' + obj.freq.value + 'x)'
+        formula.textContent = 'f(x) = ' + tabObj.amp.value + 'sin(' + tabObj.freq.value + 'x)'
         freqInput.addEventListener('input', () => {
-            formula.textContent = 'f(x) = ' + obj.amp.value + 'sin(' + obj.freq.value + 'x)'
+            formula.textContent = 'f(x) = ' + tabObj.amp.value + 'sin(' + tabObj.freq.value + 'x)'
         })
         ampInput.addEventListener('input', () => {
-            formula.textContent = 'f(x) = ' + obj.amp.value + 'sin(' + obj.freq.value + 'x)'
+            formula.textContent = 'f(x) = ' + tabObj.amp.value + 'sin(' + tabObj.freq.value + 'x)'
         })
 
         return x;
@@ -76,32 +76,32 @@ function makeTabObj() {
     // creates an audio context with an oscillator that outputs a specified sound wave and draws it out as a sine wave
     function createWave() {
             // (NODE) Create the oscillator
-            obj.oscillator = audioContext.createOscillator();
+            tabObj.oscillator = audioContext.createOscillator();
             
             const bufferLength = analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
             
             
             // Set the frequency for the oscillator
-            obj.oscillator.frequency.value = obj.freq.value;
+            tabObj.oscillator.frequency.value = tabObj.freq.value;
 
             
             // Set the amplitude for the oscillator
             // (NODE)
             const gainNode = audioContext.createGain(); 
-            gainNode.gain.setValueAtTime(obj.amp.value, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(tabObj.amp.value, audioContext.currentTime);
                 
             // connect the (NODE)s
-            obj.oscillator.connect(analyser);
+            tabObj.oscillator.connect(analyser);
             analyser.connect(gainNode);
             gainNode.connect(audioContext.destination);
             // oscillator (input) --> analyser --> gain --> destination (output)
 
             // start the oscillator, starting the chain
-            obj.oscillator.start();
+            tabObj.oscillator.start();
             
             // the button must now display "stop"
-            obj.activeButton.textContent = obj.activeButtonLabel;
+            tabObj.activeButton.textContent = tabObj.activeButtonLabel;
             
             // And create the canvas
             const canvas = document.getElementById('oscilloscope');
@@ -147,8 +147,8 @@ function makeTabObj() {
 
     function killWave() {
 
-        obj.oscillator.stop();
-        obj.activeButton.textContent = obj.inactiveButtonLabel;
+        tabObj.oscillator.stop();
+        tabObj.activeButton.textContent = tabObj.inactiveButtonLabel;
 
     }
 
@@ -156,9 +156,9 @@ function makeTabObj() {
     createWave();
     killWave();
 
-    obj.activeButton.addEventListener('click', () => {
-        obj.active = !obj.active;
-        if(obj.active) {
+    tabObj.activeButton.addEventListener('click', () => {
+        tabObj.active = !tabObj.active;
+        if(tabObj.active) {
             createWave();
         } else {
             killWave();
@@ -166,7 +166,7 @@ function makeTabObj() {
     });
 
     
-    return obj;
+    return tabObj;
 }
 
 function makeNewTab() {
