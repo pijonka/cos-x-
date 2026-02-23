@@ -1,7 +1,6 @@
 // Create Web Audio API context
 const audioContext = new AudioContext();
 
-
 // (NODE) Create the global analyser
 const analyser = audioContext.createAnalyser();
 analyser.fftSize = 2048;
@@ -51,7 +50,7 @@ function makeTabObj() {
         activeButton: newTab.querySelector('#activeButton'),
         htmlElement: newTab,
         oscillator: null,
-
+        gainNode: null,
         activeButtonLabel: 'stop',
         inactiveButtonLabel: 'start'
         
@@ -61,93 +60,120 @@ function makeTabObj() {
     // (having this be a function, especially with a parameter, is absolutely redunant, but looks cool)
     function f(x) {
         let formula = newTab.querySelector('#f');
-        formula.textContent = 'f(x) = ' + tabObj.amp.value + 'sin(' + tabObj.freq.value + 'x)'
+        function updateFormula() {
+            formula.textContent = 'f(x) = ' + tabObj.amp.value + 'sin(2π * ' + tabObj.freq.value + 'x)'
+        }
+        // once to initialize
+        updateFormula();
+
+        // then at scheduled moments
         freqInput.addEventListener('input', () => {
-            formula.textContent = 'f(x) = ' + tabObj.amp.value + 'sin(' + tabObj.freq.value + 'x)'
+            updateFormula()
         })
         ampInput.addEventListener('input', () => {
-            formula.textContent = 'f(x) = ' + tabObj.amp.value + 'sin(' + tabObj.freq.value + 'x)'
+            updateFormula();
         })
 
         return x;
     }
     f(0);
 
-    // creates an audio context with an oscillator that outputs a specified sound wave and draws it out as a sine wave
+    // creates an oscillator that outputs a specified sound wave and draws it out as a sine wave
     function createWave() {
-            // (NODE) Create the oscillator
-            tabObj.oscillator = audioContext.createOscillator();
-            
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            
-            
-            // Set the frequency for the oscillator
-            tabObj.oscillator.frequency.value = tabObj.freq.value;
+    
+        if(tabObj.oscillator) {
+            tabObj.oscillator.stop();
+            tabObj.oscillator.disconnect();
+        }
 
-            
-            // Set the amplitude for the oscillator
-            // (NODE)
-            const gainNode = audioContext.createGain(); 
-            gainNode.gain.setValueAtTime(tabObj.amp.value, audioContext.currentTime);
-                
-            // connect the (NODE)s
-            tabObj.oscillator.connect(analyser);
-            analyser.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            // oscillator (input) --> analyser --> gain --> destination (output)
+        if (tabObj.gainNode) {
+            tabObj.gainNode.disconnect();
+        }
+        // (NODE) Create the oscillator
+        tabObj.oscillator = audioContext.createOscillator();
+        
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        
+        // Set the frequency for the oscillator
+        tabObj.oscillator.frequency.value = tabObj.freq.value;
 
-            // start the oscillator, starting the chain
+        // Set the amplitude for the oscillator
+        // (NODE)
+        tabObj.gainNode = audioContext.createGain(); 
+        tabObj.gainNode.gain.setValueAtTime(tabObj.amp.value, audioContext.currentTime);
+            
+        // connect the (NODE)s
+        tabObj.oscillator.connect(analyser);
+        analyser.connect(tabObj.gainNode);
+        tabObj.gainNode.connect(audioContext.destination);
+        // oscillator (input) --> analyser --> gain --> destination (output)
+
+        // We need to save the start time of the oscillator as well as the length in seconds of a period
+        tabObj.startTime = audioContext.currentTime;
+        tabObj.period = (2 * Math.PI) / tabObj.freq.value;
+
+        // start the oscillator, starting the chain
+        // we must start the oscillator such that every sound wave starts at their starting point
+        if(Number.isInteger(tabObj.startTime / tabObj.period)) {
+            // 
             tabObj.oscillator.start();
-            
-            // the button must now display "stop"
-            tabObj.activeButton.textContent = tabObj.activeButtonLabel;
-            
-            // And create the canvas
-            const canvas = document.getElementById('oscilloscope');
-            const canvasContext = canvas.getContext('2d');
+        }
+        
+        // the button must now display "stop"
+        tabObj.activeButton.textContent = tabObj.activeButtonLabel;
+        
+        // And create the canvas
+        const canvas = document.getElementById('oscilloscope');
+        const canvasContext = canvas.getContext('2d');
 
-            function draw() {
-                requestAnimationFrame(draw);
+        function draw() {
+            requestAnimationFrame(draw);
 
-                analyser.getByteTimeDomainData(dataArray);
+            analyser.getByteTimeDomainData(dataArray);
 
-                canvasContext.fillStyle = 'rgb(255, 255, 255)';
-                canvasContext.fillRect(0, 0, canvas.width, canvas.height)
+            canvasContext.fillStyle = 'rgb(255, 255, 255)';
+            canvasContext.fillRect(0, 0, canvas.width, canvas.height)
 
-                canvasContext.lineWidth = 2;
-                canvasContext.strokeStyle = "rgb(0 0 0)";
+            canvasContext.lineWidth = 2;
+            canvasContext.strokeStyle = "rgb(0 0 0)";
 
-                canvasContext.beginPath();
+            canvasContext.beginPath();
 
-                const sliceWidth = (canvas.width * 1.0) / bufferLength;
-                let x = 0;
+            const sliceWidth = (canvas.width * 1.0) / bufferLength;
+            let x = 0;
 
-                for (let i = 0; i < bufferLength; i++) {
-                    const v = dataArray[i] / 128.0;
-                    const y = (v * canvas.height) / 2;
+            for (let i = 0; i < bufferLength; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = (v * canvas.height) / 2;
 
-                    if (i === 0) {
-                        canvasContext.moveTo(x, y);
-                    } else {
-                        canvasContext.lineTo(x, y);
-                    }
-
-                    x += sliceWidth;
+                if (i === 0) {
+                    canvasContext.moveTo(x, y);
+                } else {
+                    canvasContext.lineTo(x, y);
                 }
 
-                canvasContext.lineTo(canvas.width, canvas.height / 2);
-                canvasContext.stroke();
-
+                x += sliceWidth;
             }
-            
-            draw();
+
+            canvasContext.lineTo(canvas.width, canvas.height / 2);
+            canvasContext.stroke();
+
+        }
+        
+        draw();
         
     }
 
     function killWave() {
+        if (tabObj.oscillator){
+            tabObj.oscillator.stop();
+            tabObj.oscillator.disconnect();
+        }
+        if(tabObj.gainNode) {
+            tabObj.gainNode.disconnect();
+        }
 
-        tabObj.oscillator.stop();
         tabObj.activeButton.textContent = tabObj.inactiveButtonLabel;
 
     }
