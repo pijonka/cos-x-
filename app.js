@@ -30,8 +30,8 @@ function makeTabObj() {
                 </div>
 
                 <div>
-                    <label for="phase">Phase (PLACEHOLDER!)</label>
-                    <input id="phase" type="text" value="0">
+                    <label for="phase">Phase</label>
+                    <input id="phase" type="text" value="0">°</input>
                 </div>
 
                 <button id="activeButton">Start</button>
@@ -42,10 +42,13 @@ function makeTabObj() {
     freqInput.addEventListener('input', () => {freqInput = newTab.querySelector('#freq');});
     let ampInput = newTab.querySelector('#amp');
     ampInput.addEventListener('input', () => {ampInput = newTab.querySelector('#amp');});
+    let phaseInput = newTab.querySelector('#phase');
+    phaseInput.addEventListener('input', () => {phaseInput = newTab.querySelector('#phase');});
 
     let tabObj = {
         freq: freqInput,
         amp: ampInput,
+        phase: phaseInput,
         active: false,
         activeButton: newTab.querySelector('#activeButton'),
         htmlElement: newTab,
@@ -61,18 +64,21 @@ function makeTabObj() {
     function f(x) {
         let formula = newTab.querySelector('#f');
         function updateFormula() {
-            formula.textContent = 'f(x) = ' + tabObj.amp.value + 'sin(2π * ' + tabObj.freq.value + 'x)'
+            formula.textContent = 'f(x) = ' + tabObj.amp.value + 'sin(2π * ' + tabObj.freq.value + '(x - ' + tabObj.phase.value + '°))'
         }
-        // once to initialize
+        // build formula once to initialize
         updateFormula();
 
-        // then at scheduled moments
+        // then build again consequence of input
         freqInput.addEventListener('input', () => {
             updateFormula()
         })
         ampInput.addEventListener('input', () => {
             updateFormula();
-        })
+        });
+        phaseInput.addEventListener('input', () => {
+            updateFormula();
+        });
 
         return x;
     }
@@ -102,23 +108,24 @@ function makeTabObj() {
         // (NODE)
         tabObj.gainNode = audioContext.createGain(); 
         tabObj.gainNode.gain.setValueAtTime(tabObj.amp.value, audioContext.currentTime);
-            
+        
+        // set the phase for the oscillator
+        // tabObj.oscillator.phase.value = tabObj.phase.value;
+
         // connect the (NODE)s
         tabObj.oscillator.connect(analyser);
         analyser.connect(tabObj.gainNode);
         tabObj.gainNode.connect(audioContext.destination);
         // oscillator (input) --> analyser --> gain --> destination (output)
 
-        // We need to save the start time of the oscillator as well as the length in seconds of a period
-        tabObj.startTime = audioContext.currentTime;
-        tabObj.period = (2 * Math.PI) / tabObj.freq.value;
+        // Retrieve timing data
+        tabObj.period = 1 / tabObj.freq;
+        tabObj.currentPhase = (audioContext.currentTime * tabObj.freq) % 1;
+        tabObj.delayTime = tabObj.currentPhase > 0 ? (1 - tabObj.currentPhase) * tabObj.period : 0;
 
-        // start the oscillator, starting the chain
-        // we must start the oscillator such that every sound wave starts at their starting point
-        if(Number.isInteger(tabObj.startTime / tabObj.period)) {
-            // 
-            tabObj.oscillator.start();
-        }
+        // Make sure period starts at the right time
+        tabObj.startTime = audioContext.currentTime + tabObj.delayTime;
+        tabObj.oscillator.start(tabObj.startTime);
         
         // the button must now display "stop"
         tabObj.activeButton.textContent = tabObj.activeButtonLabel;
