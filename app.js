@@ -1,8 +1,15 @@
 // Create Web Audio API context
 const audioContext = new AudioContext();
 
-// Declare a global start time for all oscillators to use (this is t = 0)
-const startTime = audioContext.currentTime;
+// Create one oscillator in audioContext that other sine waves can be relative to
+const relativeOscillator = audioContext.createOscillator();
+const testButton = document.getElementById('test');
+testButton.addEventListener('click', () => {
+    audioContext.relativeOscillator.start();
+    console.log(audioContext.relativeOscillator.startTime);
+});
+
+
 
 // (NODE) Create the global analyser
 const analyser = audioContext.createAnalyser();
@@ -121,7 +128,7 @@ function makeTabObj() {
         tabObj.gainNode.connect(audioContext.destination);
         // oscillator (input) --> analyser --> gain --> destination (output)
 
-        tabObj.oscillator.start(audioContext.currentTime);
+        tabObj.oscillator.start(0);
         
         // the button must now display "stop"
         tabObj.activeButton.textContent = tabObj.activeButtonLabel;
