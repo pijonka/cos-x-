@@ -20,7 +20,6 @@ function makeTabObj() {
     // create a new tab element with html
     const newTab = document.createElement('div');
     newTab.innerHTML = `
-
                 <p id="f">f(x) = </p>
                 <div>
                     <label for="freq">Frequency (hz)/pitch: </label>
@@ -121,11 +120,6 @@ function makeTabObj() {
         analyser.connect(tabObj.gainNode);
         tabObj.gainNode.connect(audioContext.destination);
         // oscillator (input) --> analyser --> gain --> destination (output)
-
-        // Retrieve timing data
-        tabObj.period = 1 / tabObj.freq;
-        tabObj.currentPhase = (audioContext.currentTime * tabObj.freq) % 1;
-        tabObj.delayTime = tabObj.currentPhase > 0 ? (1 - tabObj.currentPhase) * tabObj.period : 0;
 
         tabObj.oscillator.start(audioContext.currentTime);
         
