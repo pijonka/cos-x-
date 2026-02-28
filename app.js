@@ -1,6 +1,9 @@
 // Create Web Audio API context
 const audioContext = new AudioContext();
 
+// Declare a global start time for all oscillators to use (this is t = 0)
+const startTime = audioContext.currentTime;
+
 // (NODE) Create the global analyser
 const analyser = audioContext.createAnalyser();
 analyser.fftSize = 2048;
@@ -17,7 +20,7 @@ function makeTabObj() {
     // create a new tab element with html
     const newTab = document.createElement('div');
     newTab.innerHTML = `
-                <h1>Controls</h1>
+
                 <p id="f">f(x) = </p>
                 <div>
                     <label for="freq">Frequency (hz)/pitch: </label>
@@ -45,6 +48,7 @@ function makeTabObj() {
     let phaseInput = newTab.querySelector('#phase');
     phaseInput.addEventListener('input', () => {phaseInput = newTab.querySelector('#phase');});
 
+    // the tab object which will be replicated for each instance
     let tabObj = {
         freq: freqInput,
         amp: ampInput,
@@ -123,9 +127,7 @@ function makeTabObj() {
         tabObj.currentPhase = (audioContext.currentTime * tabObj.freq) % 1;
         tabObj.delayTime = tabObj.currentPhase > 0 ? (1 - tabObj.currentPhase) * tabObj.period : 0;
 
-        // Make sure period starts at the right time
-        tabObj.startTime = audioContext.currentTime + tabObj.delayTime;
-        tabObj.oscillator.start(tabObj.startTime);
+        tabObj.oscillator.start(audioContext.currentTime);
         
         // the button must now display "stop"
         tabObj.activeButton.textContent = tabObj.activeButtonLabel;
