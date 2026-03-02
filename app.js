@@ -1,8 +1,8 @@
 // Create Web Audio API context
 const audioContext = new AudioContext();
 
-// Declare a global start time for all oscillators to use (this is t = 0)
-const startTime = audioContext.currentTime;
+// saves when the first oscillator ever in the program starts
+let firstStartTime = null;
 
 // (NODE) Create the global analyser
 const analyser = audioContext.createAnalyser();
@@ -89,15 +89,17 @@ function makeTabObj() {
 
     // creates an oscillator that outputs a specified sound wave and draws it out as a sine wave
     function createWave() {
-    
+
+        // resets oscillator associated with this instance
         if(tabObj.oscillator) {
             tabObj.oscillator.stop();
             tabObj.oscillator.disconnect();
         }
-
+        // resets gain node associated with this instance
         if (tabObj.gainNode) {
             tabObj.gainNode.disconnect();
         }
+        
         // (NODE) Create the oscillator
         tabObj.oscillator = audioContext.createOscillator();
         
@@ -188,6 +190,9 @@ function makeTabObj() {
     tabObj.activeButton.addEventListener('click', () => {
         tabObj.active = !tabObj.active;
         if(tabObj.active) {
+            // checks whether there has already been a first oscillator that passed firstStartTime
+            if (firstStartTime === null)
+                firstStartTime = audioContext.currentTime
             createWave();
         } else {
             killWave();
