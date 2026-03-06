@@ -192,6 +192,7 @@ function makeTabObj() {
     // activity condition
     tabObj.activeButton.addEventListener('click', () => {
         tabObj.active = !tabObj.active;
+        tabObj.waitInterval = setInterval(activateWave, 3) // setup a wait time if the period is not yet right
         activateWave();
     });
 
@@ -202,10 +203,11 @@ function makeTabObj() {
                 firstStartTime = audioContext.currentTime
             
             // if the time is at some period of the wave
-            if (Number.isInteger( (audioContext.currentTime - firstStartTime) * tabObj.freq.value))
+            if (Number.isInteger( (audioContext.currentTime - firstStartTime) * tabObj.freq.value)) {
                 createWave(); // create the wave
+                clearInterval(tabObj.waitInterval)
+            }
             else { // if the time is not yet at a period
-                requestAnimationFrame(activateWave) // wait until it is and let true condition pass
                 tabObj.activeButton.textContent = '...'; // UI gesture
             }
         } else {
