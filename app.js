@@ -187,21 +187,7 @@ function makeTabObj() {
     killWave();
 
 
-    function activateWave() {
-            if(tabObj.active) {
-            // checks whether there has already been a first oscillator that passed firstStartTime
-            if (firstStartTime === null)
-                firstStartTime = audioContext.currentTime
-            
-            // IMPLEMENT CODE HeRE
-            if (Number.isInteger(audioContext.currentTime * tabObj.freq))
-                createWave();
-            else 
-                requestAnimationFrame(activateWave)
-        } else {
-            killWave();
-        }
-    }
+
 
     // activity condition
     tabObj.activeButton.addEventListener('click', () => {
@@ -209,6 +195,21 @@ function makeTabObj() {
         activateWave();
     });
 
+    function activateWave() {
+        if(tabObj.active) {
+        // checks whether there has already been a first oscillator that passed firstStartTime
+        if (firstStartTime === null) 
+            firstStartTime = audioContext.currentTime
+        
+        // if the time is at some period of the wave
+        if (Number.isInteger((audioContext.currentTime - firstStartTime)* tabObj.freq))
+            createWave(); // create the wave
+        else // if the time is not yet at a period
+            requestAnimationFrame(activateWave) // wait until it is and let true condition pass
+    } else {
+        killWave();
+    }
+}
     
     return tabObj;
 }
