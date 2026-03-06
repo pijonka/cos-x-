@@ -202,7 +202,7 @@ function makeTabObj() {
                 firstStartTime = audioContext.currentTime
             
             // if the time is at some period of the wave
-            if (Number.isInteger((audioContext.currentTime)* tabObj.freq.value))
+            if (Number.isInteger( (audioContext.currentTime - firstStartTime) * tabObj.freq.value))
                 createWave(); // create the wave
             else { // if the time is not yet at a period
                 requestAnimationFrame(activateWave) // wait until it is and let true condition pass
