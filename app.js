@@ -122,8 +122,7 @@ function makeTabObj() {
         analyser.connect(tabObj.gainNode);
         tabObj.gainNode.connect(audioContext.destination);
         // oscillator (input) --> analyser --> gain --> destination (output)
-
-        tabObj.oscillator.start(audioContext.currentTime);
+        tabObj.oscillator.start();
         
         // the button must now display "stop"
         tabObj.activeButton.textContent = tabObj.activeButtonLabel;
@@ -187,16 +186,27 @@ function makeTabObj() {
     createWave();
     killWave();
 
-    tabObj.activeButton.addEventListener('click', () => {
-        tabObj.active = !tabObj.active;
-        if(tabObj.active) {
+
+    function activateWave() {
+            if(tabObj.active) {
             // checks whether there has already been a first oscillator that passed firstStartTime
             if (firstStartTime === null)
                 firstStartTime = audioContext.currentTime
-            createWave();
+            
+            // IMPLEMENT CODE HeRE
+            if (Number.isInteger(audioContext.currentTime * tabObj.freq))
+                createWave();
+            else 
+                requestAnimationFrame(activateWave)
         } else {
             killWave();
         }
+    }
+
+    // activity condition
+    tabObj.activeButton.addEventListener('click', () => {
+        tabObj.active = !tabObj.active;
+        activateWave();
     });
 
     
