@@ -204,8 +204,10 @@ function makeTabObj() {
             // if the time is at some period of the wave
             if (Number.isInteger((audioContext.currentTime)* tabObj.freq.value))
                 createWave(); // create the wave
-            else // if the time is not yet at a period
+            else { // if the time is not yet at a period
                 requestAnimationFrame(activateWave) // wait until it is and let true condition pass
+                tabObj.activeButton.textContent = '...'; // UI gesture
+            }
         } else {
             killWave();
         }
