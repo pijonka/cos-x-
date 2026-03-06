@@ -196,20 +196,20 @@ function makeTabObj() {
     });
 
     function activateWave() {
-        if(tabObj.active) {
-        // checks whether there has already been a first oscillator that passed firstStartTime
-        if (firstStartTime === null) 
-            firstStartTime = audioContext.currentTime
-        
-        // if the time is at some period of the wave
-        if (Number.isInteger((audioContext.currentTime - firstStartTime)* tabObj.freq))
-            createWave(); // create the wave
-        else // if the time is not yet at a period
-            requestAnimationFrame(activateWave) // wait until it is and let true condition pass
-    } else {
-        killWave();
+            if(tabObj.active) {
+            // checks whether there has already been a first oscillator that passed firstStartTime
+            if (firstStartTime === null) 
+                firstStartTime = audioContext.currentTime
+            
+            // if the time is at some period of the wave
+            if (Number.isInteger((audioContext.currentTime)* tabObj.freq.value))
+                createWave(); // create the wave
+            else // if the time is not yet at a period
+                requestAnimationFrame(activateWave) // wait until it is and let true condition pass
+        } else {
+            killWave();
+        }
     }
-}
     
     return tabObj;
 }
