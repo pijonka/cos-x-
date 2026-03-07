@@ -88,7 +88,7 @@ function makeTabObj() {
     f(0);
 
     // creates an oscillator that outputs a specified sound wave and draws it out as a sine wave
-    function createWave() {
+    function createWave(when) {
 
         // resets oscillator associated with this instance
         if(tabObj.oscillator) {
@@ -122,7 +122,7 @@ function makeTabObj() {
         analyser.connect(tabObj.gainNode);
         tabObj.gainNode.connect(audioContext.destination);
         // oscillator (input) --> analyser --> gain --> destination (output)
-        tabObj.oscillator.start();
+        tabObj.oscillator.start(when);
         
         // the button must now display "stop"
         tabObj.activeButton.textContent = tabObj.activeButtonLabel;
@@ -205,7 +205,7 @@ function makeTabObj() {
             tabObj.phaseCycles = (tabObj.phase.value / 360);
             
             // is this... what the variable is supposed to be called?
-            tabObj.elapsedTime = audioContext.currentTime - firstStartTime - tabObj.phaseInSeconds;
+            tabObj.elapsedTime = audioContext.currentTime - firstStartTime;
 
             // >????D>AS< I don't understand
             tabObj.elapsedCycles = tabObj.freq.value * tabObj.elapsedTime;
@@ -217,17 +217,8 @@ function makeTabObj() {
             tabObj.waitSeconds = tabObj.cyclesToWait / tabObj.freq.value;
 
             tabObj.startWhen = audioContext.currentTime + tabObj.waitSeconds;
-            
-            // if the time is at some period of the wave
-            if (Number.isInteger( (tabObj.elapsedTime * tabObj.freq.value))) {
-                createWave(); // create the wave
 
-            }
-            else { // if the time is not yet at a period
-                tabObj.activeButton.textContent = '...'; // UI gesture
-                if (tabObj.syncTimer === undefined)
-                    tabObj.syncTimer = setTimeout(tabObj.startWhen);
-            }
+            createWave(tabObj.startWhen)
         } else {
             killWave();
         }
