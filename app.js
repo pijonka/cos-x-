@@ -202,11 +202,22 @@ function makeTabObj() {
                 firstStartTime = audioContext.currentTime
 
             // conversion from phase in degrees to phase in seconds
-            tabObj.phaseInSeconds = (tabObj.phase.value / 360) / tabObj.freq.value;
+            tabObj.phaseCycles = (tabObj.phase.value / 360);
             
             // is this... what the variable is supposed to be called?
-            tabObj.elapsedTime = audioContext.currentTime - firstStartTime - tabObj.phaseInSeconds
+            tabObj.elapsedTime = audioContext.currentTime - firstStartTime - tabObj.phaseInSeconds;
 
+            // >????D>AS< I don't understand
+            tabObj.elapsedCycles = tabObj.freq.value * tabObj.elapsedTime;
+
+            tabObj.pos = (tabObj.elapsedCycles - tabObj.phaseCycles) % 1;
+
+            tabObj.cyclesToWait = (1 - tabObj.pos) % 1;
+
+            tabObj.waitSeconds = tabObj.cyclesToWait / tabObj.freq.value;
+
+            tabObj.startWhen = audioContext.currentTime + tabObj.waitSeconds;
+            
             // if the time is at some period of the wave
             if (Number.isInteger( (tabObj.elapsedTime * tabObj.freq.value))) {
                 createWave(); // create the wave
@@ -214,7 +225,8 @@ function makeTabObj() {
             }
             else { // if the time is not yet at a period
                 tabObj.activeButton.textContent = '...'; // UI gesture
-                tabObj.syncTimer = setTimeout(activateWave, (Math.ceil(tabObj.elapsedTime) - tabObj.elapsedTime))
+                if (tabObj.syncTimer === undefined)
+                    tabObj.syncTimer = setTimeout(tabObj.startWhen);
             }
         } else {
             killWave();
