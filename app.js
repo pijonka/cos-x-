@@ -192,7 +192,6 @@ function makeTabObj() {
     // activity condition
     tabObj.activeButton.addEventListener('click', () => {
         tabObj.active = !tabObj.active;
-        tabObj.waitInterval = setInterval(activateWave, 3) // setup a wait time if the period is not yet right
         activateWave();
     });
 
@@ -201,14 +200,18 @@ function makeTabObj() {
             // checks whether there has already been a first oscillator that passed firstStartTime
             if (firstStartTime === null) 
                 firstStartTime = audioContext.currentTime
-            
+
+            // is this... what the variable is supposed to be called?
+            tabObj.elapsedTime = audioContext.currentTime - firstStartTime - tabObj.phase.value
+
             // if the time is at some period of the wave
-            if (Number.isInteger( (audioContext.currentTime - firstStartTime) * tabObj.freq.value)) {
+            if (Number.isInteger( (tabObj.elapsedTime * tabObj.freq.value))) {
                 createWave(); // create the wave
-                clearInterval(tabObj.waitInterval)
+
             }
             else { // if the time is not yet at a period
                 tabObj.activeButton.textContent = '...'; // UI gesture
+                tabObj.syncTimer = setTimeout(activateWave, (Math.ceil(tabObj.elapsedTime) - tabObj.elapsedTime))
             }
         } else {
             killWave();
