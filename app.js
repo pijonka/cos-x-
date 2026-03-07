@@ -201,8 +201,11 @@ function makeTabObj() {
             if (firstStartTime === null) 
                 firstStartTime = audioContext.currentTime
 
+            // conversion from phase in degrees to phase in seconds
+            tabObj.phaseInSeconds = (tabObj.phase.value / 360) / tabObj.freq.value;
+            
             // is this... what the variable is supposed to be called?
-            tabObj.elapsedTime = audioContext.currentTime - firstStartTime - tabObj.phase.value
+            tabObj.elapsedTime = audioContext.currentTime - firstStartTime - tabObj.phaseInSeconds
 
             // if the time is at some period of the wave
             if (Number.isInteger( (tabObj.elapsedTime * tabObj.freq.value))) {
