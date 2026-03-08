@@ -1,12 +1,20 @@
-// Create Web Audio API context
+// normalize any value to the range [0, 1)
+function normalizeToRange(value) {
+    const remainder = value % 1;
+    return remainder >= 0 ? remainder : remainder + 1;
+}
+
+
+// create Web Audio API context
 const audioContext = new AudioContext();
 
 // saves when the first oscillator ever in the program starts
 let firstStartTime = null;
 
-// (NODE) Create the global analyser
+// (NODE) create the global analyser
 const analyser = audioContext.createAnalyser();
 analyser.fftSize = 2048;
+
 
 // all the tabs
 const tabsContainer = document.getElementById('tabs');
@@ -211,10 +219,10 @@ function makeTabObj() {
             tabObj.elapsedCycles = tabObj.freq.value * tabObj.elapsedTime;
 
             // the position that the wave should be on given its phase
-            tabObj.pos = (tabObj.elapsedCycles - tabObj.phaseCycles) % 1;
+            tabObj.pos = normalizeToRange(tabObj.elapsedCycles - tabObj.phaseCycles);
 
             // the amount of cycles to wait before starting the sound wave (will always be a fractional value)
-            tabObj.cyclesToWait = (1 - tabObj.pos) % 1;
+            tabObj.cyclesToWait = 1 - tabObj.pos;
 
             // the amount of seconds to wait (divide by frequency so that it converts from cycles to seconds)
             tabObj.waitSeconds = tabObj.cyclesToWait / tabObj.freq.value;
