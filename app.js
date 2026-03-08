@@ -201,23 +201,28 @@ function makeTabObj() {
             if (firstStartTime === null) 
                 firstStartTime = audioContext.currentTime
 
-            // conversion from phase in degrees to phase in seconds
+            // conversion from phase in degrees to phase in seconds (take how much it fits INTO 360 degrees)
             tabObj.phaseCycles = (tabObj.phase.value / 360);
             
-            // is this... what the variable is supposed to be called?
+            // distance between the starting point and the current time
             tabObj.elapsedTime = audioContext.currentTime - firstStartTime;
 
-            // >????D>AS< I don't understand
+            // the amount of cycles that the oscillator has endured (neutralize the elapsed time by multiplying with frequency so that, when it is an integer, it will be a continuous value that tells you how many cycles have passed (integer if it is ON a period))
             tabObj.elapsedCycles = tabObj.freq.value * tabObj.elapsedTime;
 
+            // the position that the wave should be on given its phase
             tabObj.pos = (tabObj.elapsedCycles - tabObj.phaseCycles) % 1;
 
+            // the amount of cycles to wait before starting the sound wave (will always be a fractional value)
             tabObj.cyclesToWait = (1 - tabObj.pos) % 1;
 
+            // the amount of seconds to wait (divide by frequency so that it converts from cycles to seconds)
             tabObj.waitSeconds = tabObj.cyclesToWait / tabObj.freq.value;
 
+            // start at the current time plus the calculated seconds to wait
             tabObj.startWhen = audioContext.currentTime + tabObj.waitSeconds;
 
+            // pass start time
             createWave(tabObj.startWhen)
         } else {
             killWave();
