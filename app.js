@@ -23,17 +23,17 @@ function makeTabObj() {
                 <p id="f">f(x) = </p>
                 <div>
                     <label for="freq">Frequency (hz)/pitch: </label>
-                    <input id="freq" type="text" value="440"></input>
+                    <input id="freq" type="number" value="440"></input>
                 </div>
 
                 <div>
                     <label for="amp">Amplitude/volume: </label>
-                    <input id="amp" type="text" value="1">
+                    <input id="amp" type="number" value="1">
                 </div>
 
                 <div>
                     <label for="phase">Phase</label>
-                    <input id="phase" type="text" value="0">°</input>
+                    <input id="phase" type="number" value="0">°</input>
                 </div>
 
                 <button id="activeButton">Start</button>
