@@ -1,12 +1,20 @@
-// Create Web Audio API context
+// normalize any value to the range [0, 1)
+function normalizeToRange(value) {
+    const remainder = value % 1;
+    return remainder >= 0 ? remainder : remainder + 1;
+}
+
+
+// create Web Audio API context
 const audioContext = new AudioContext();
 
-// Declare a global start time for all oscillators to use (this is t = 0)
-const startTime = audioContext.currentTime;
+// saves when the first oscillator ever in the program starts
+let firstStartTime = null;
 
-// (NODE) Create the global analyser
+// (NODE) create the global analyser
 const analyser = audioContext.createAnalyser();
 analyser.fftSize = 2048;
+
 
 // all the tabs
 const tabsContainer = document.getElementById('tabs');
@@ -23,17 +31,17 @@ function makeTabObj() {
                 <p id="f">f(x) = </p>
                 <div>
                     <label for="freq">Frequency (hz)/pitch: </label>
-                    <input id="freq" type="text" value="440"></input>
+                    <input id="freq" type="number" value="440"></input>
                 </div>
 
                 <div>
                     <label for="amp">Amplitude/volume: </label>
-                    <input id="amp" type="text" value="1">
+                    <input id="amp" type="number" value="1">
                 </div>
 
                 <div>
                     <label for="phase">Phase</label>
-                    <input id="phase" type="text" value="0">°</input>
+                    <input id="phase" type="number" value="0">°</input>
                 </div>
 
                 <button id="activeButton">Start</button>
@@ -88,16 +96,18 @@ function makeTabObj() {
     f(0);
 
     // creates an oscillator that outputs a specified sound wave and draws it out as a sine wave
-    function createWave() {
-    
+    function createWave(when) {
+
+        // resets oscillator associated with this instance
         if(tabObj.oscillator) {
             tabObj.oscillator.stop();
             tabObj.oscillator.disconnect();
         }
-
+        // resets gain node associated with this instance
         if (tabObj.gainNode) {
             tabObj.gainNode.disconnect();
         }
+        
         // (NODE) Create the oscillator
         tabObj.oscillator = audioContext.createOscillator();
         
@@ -120,8 +130,7 @@ function makeTabObj() {
         analyser.connect(tabObj.gainNode);
         tabObj.gainNode.connect(audioContext.destination);
         // oscillator (input) --> analyser --> gain --> destination (output)
-
-        tabObj.oscillator.start(audioContext.currentTime);
+        tabObj.oscillator.start(when);
         
         // the button must now display "stop"
         tabObj.activeButton.textContent = tabObj.activeButtonLabel;
@@ -185,15 +194,48 @@ function makeTabObj() {
     createWave();
     killWave();
 
+
+
+
+    // activity condition
     tabObj.activeButton.addEventListener('click', () => {
         tabObj.active = !tabObj.active;
-        if(tabObj.active) {
-            createWave();
+        activateWave();
+    });
+
+    function activateWave() {
+            if(tabObj.active) {
+            // checks whether there has already been a first oscillator that passed firstStartTime
+            if (firstStartTime === null) 
+                firstStartTime = audioContext.currentTime
+
+            // conversion from phase in degrees to phase in seconds (take how much it fits INTO 360 degrees)
+            tabObj.phaseCycles = (tabObj.phase.value / 360);
+            
+            // distance between the starting point and the current time
+            tabObj.elapsedTime = audioContext.currentTime - firstStartTime;
+
+            // the amount of cycles that the oscillator has endured (neutralize the elapsed time by multiplying with frequency so that, when it is an integer, it will be a continuous value that tells you how many cycles have passed (integer if it is ON a period))
+            tabObj.elapsedCycles = tabObj.freq.value * tabObj.elapsedTime;
+
+            // the position that the wave should be on given its phase
+            tabObj.pos = normalizeToRange(tabObj.elapsedCycles - tabObj.phaseCycles);
+
+            // the amount of cycles to wait before starting the sound wave (will always be a fractional value)
+            tabObj.cyclesToWait = 1 - tabObj.pos;
+
+            // the amount of seconds to wait (divide by frequency so that it converts from cycles to seconds)
+            tabObj.waitSeconds = tabObj.cyclesToWait / tabObj.freq.value;
+
+            // start at the current time plus the calculated seconds to wait
+            tabObj.startWhen = audioContext.currentTime + tabObj.waitSeconds;
+
+            // pass start time
+            createWave(tabObj.startWhen)
         } else {
             killWave();
         }
-    });
-
+    }
     
     return tabObj;
 }
