@@ -270,5 +270,7 @@ newTabButton.addEventListener('click', () => {
                 <button class="inactiveTab">Oscillator ${i}</button>
             `
         }
+
+        tabBar.appendChild(tabArray[i].tabHandle);
     }
 })
