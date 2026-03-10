@@ -258,5 +258,9 @@ const newTabButton = document.getElementById('newTabButton');
 newTabButton.addEventListener('click', () => {
     // give them a new tab
     makeNewTab();
-    
+
+    // go through each array
+    for (i = 0; i <= tabArray.length; i++) {
+        
+    }
 })
