@@ -266,7 +266,9 @@ newTabButton.addEventListener('click', () => {
                 <a id="activeTabLink">Oscillator ${i}</a>
             `
             let activeTabLink = tabArray[i].tabHandle.querySelector('activeTabLink')
-
+            activeTabLink.addEventListener('click', () => {
+                
+            })
         } else {
             tabArray[i].tabHandle.innerHTML = `
                 <a class="inactiveTabLink">Oscillator ${i}</a>
