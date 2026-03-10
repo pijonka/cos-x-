@@ -263,11 +263,11 @@ newTabButton.addEventListener('click', () => {
     for (i = 0; i <= tabArray.length; i++) {
         if(i == activeTab) {
             tabArray[i].tabHandle.innerHTML = `
-                <button id="activeTab">Oscillator ${i}</button>
+                <a id="activeTab">Oscillator ${i}</a>
             `
         } else {
             tabArray[i].tabHandle.innerHTML = `
-                <button class="inactiveTab">Oscillator ${i}</button>
+                <a class="inactiveTab">Oscillator ${i}</a>
             `
         }
 
