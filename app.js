@@ -69,8 +69,8 @@ function makeTabObj() {
         oscillator: null,
         gainNode: null,
         activeButtonLabel: 'stop',
-        inactiveButtonLabel: 'start'
-        
+        inactiveButtonLabel: 'start',
+        tabHandle: document.createElement('div'),
     }
     
     // f(x) implementation
@@ -260,11 +260,3 @@ newTabButton.addEventListener('click', () => {
     makeNewTab();
     
 })
-
-
-
-// for the number of elements in tabArray
-for(i = 0; i < tabArray.length; i++) {
-    const tabHandle = document.createElement('div');
-
-}
