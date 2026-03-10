@@ -263,14 +263,24 @@ newTabButton.addEventListener('click', () => {
     for (i = 0; i <= tabArray.length; i++) {
         if(i == activeTab) {
             tabArray[i].tabHandle.innerHTML = `
-                <a id="activeTab">Oscillator ${i}</a>
+                <a id="activeTabLink">Oscillator ${i}</a>
             `
+
+            let activeTabLink = tabArray.querySelector('activeTabLink');
+            activeTabLink.addEventListener('click', () => {
+                 
+            });
         } else {
             tabArray[i].tabHandle.innerHTML = `
-                <a class="inactiveTab">Oscillator ${i}</a>
+                <a class="inactiveTabLink">Oscillator ${i}</a>
             `
+            let inactiveTabLink = tabArray.querySelector('inactiveTabLink');
+            inactiveTabLink.addEventListener('click', () => {
+                activeTab = i;
+            })
         }
 
         tabBar.appendChild(tabArray[i].tabHandle);
     }
 })
+
