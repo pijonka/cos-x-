@@ -249,7 +249,7 @@ function makeNewTab() {
     tabsContainer.appendChild(newTab.htmlElement);
 }
 makeNewTab();
-openTab = tabArray[0];
+let activeTab = 0;
 
 // get the new tab button
 const newTabButton = document.getElementById('newTabButton');
@@ -261,6 +261,10 @@ newTabButton.addEventListener('click', () => {
 
     // go through each array
     for (i = 0; i <= tabArray.length; i++) {
-        
+        if(i == activeTab) {
+            tabArray[i].tabHandle.innerHTML = `
+                <button id="activeTab"></button>
+            `
+        }
     }
 })
