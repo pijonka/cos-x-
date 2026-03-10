@@ -265,6 +265,10 @@ newTabButton.addEventListener('click', () => {
             tabArray[i].tabHandle.innerHTML = `
                 <button id="activeTab">Oscillator ${i}</button>
             `
+        } else {
+            tabArray[i].tabHandle.innerHTML = `
+                <button class="inactiveTab">Oscillator ${i}</button>
+            `
         }
     }
 })
