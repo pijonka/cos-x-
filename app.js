@@ -22,6 +22,9 @@ const tabsContainer = document.getElementById('tabs');
 // array which carries the data for all the tabs 
 const tabArray = [];
 
+// switch through tab states using the tabBar
+const tabBar = document.getElementById('tabBar');
+
 // creates one instance of a tab
 function makeTabObj() {
 
@@ -258,8 +261,6 @@ newTabButton.addEventListener('click', () => {
     
 })
 
-// switch through tab states using the tabBar
-const tabBar = document.getElementById('tabBar');
 
 
 // for the number of elements in tabArray
