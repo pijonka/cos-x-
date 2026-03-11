@@ -245,7 +245,7 @@ function makeTabObj() {
 
     // declare a tab handle
     tabObj.tabHandle.innerHTML = `
-        <a>Oscillator</a>
+        <a>Oscillator ${tabArray.length}</a>
     `;
     
     return tabObj;
@@ -270,13 +270,9 @@ newTabButton.addEventListener('click', () => {
     // go through each array
     for (i = 0; i < tabArray.length; i++) {
         if(i == activeTab) {
-            /*tabArray[i]..addEventListener('click', () => {
-                
-            })*/
+
         } else {
-            /*tabArray[i].inactiveTabLink.addEventListener('click', () => {
-                
-            });*/
+
         }
 
         tabBar.appendChild(tabArray[i].tabHandle);
