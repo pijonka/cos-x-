@@ -246,9 +246,14 @@ function makeTabObj() {
 
     // declare a tab handle
     tabObj.tabHandle.innerHTML = `
-        <a>Oscillator ${tabObj.number}</a>
+        <a class="tabHandle">Oscillator ${tabObj.number}</a>
     `;
     
+    tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabHandle');
+    tabObj.tabActiveButton.addEventListener('click', () => {
+        console.log("my name is tab " + tabObj.number + " and I was just pressed")
+    })
+
     return tabObj;
 }
 
@@ -271,7 +276,7 @@ newTabButton.addEventListener('click', () => {
     // go through each array
     for (i = 0; i < tabArray.length; i++) {
         if(i == activeTab) {
-
+            
         } else {
 
         }
