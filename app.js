@@ -243,15 +243,10 @@ function makeTabObj() {
         }
     }
 
+    // declare a tab handle
     tabObj.tabHandle.innerHTML = `
-        <a class="activeTabLink">Oscillator</a>
+        <a>Oscillator</a>
     `;
-    tabObj.activeTabLink = tabObj.tabHandle.querySelector('.activeTabLink');
-
-    tabObj.tabHandle.innerHTML = `
-            <a class="inactiveTabLink">Oscillator</a>
-    `
-    tabObj.inactiveTabLink = tabObj.tabHandle.querySelector('.inactiveTabLink');
     
     return tabObj;
 }
@@ -275,11 +270,13 @@ newTabButton.addEventListener('click', () => {
     // go through each array
     for (i = 0; i < tabArray.length; i++) {
         if(i == activeTab) {
-            
+            /*tabArray[i]..addEventListener('click', () => {
+                
+            })*/
         } else {
-            inactiveTabLink.addEventListener('click', () => {
-
-            });
+            /*tabArray[i].inactiveTabLink.addEventListener('click', () => {
+                
+            });*/
         }
 
         tabBar.appendChild(tabArray[i].tabHandle);
