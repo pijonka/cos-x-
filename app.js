@@ -74,6 +74,7 @@ function makeTabObj() {
         activeButtonLabel: 'stop',
         inactiveButtonLabel: 'start',
         tabHandle: document.createElement('div'),
+        number: (tabArray.length + 1) 
     }
     
     // f(x) implementation
@@ -245,7 +246,7 @@ function makeTabObj() {
 
     // declare a tab handle
     tabObj.tabHandle.innerHTML = `
-        <a>Oscillator ${tabArray.length}</a>
+        <a>Oscillator ${tabObj.number}</a>
     `;
     
     return tabObj;
