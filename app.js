@@ -249,11 +249,11 @@ function makeTabObj() {
 
     // define a tab handle
     tabObj.tabHandle.innerHTML = `
-        <a class="tabHandle">Oscillator ${tabObj.number}</a>
+        <a class="tabActiveButton">Oscillator ${tabObj.number}</a>
     `;
     activeTab = tabObj.number;
     
-    tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabHandle');
+    tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabActiveButton');
     tabObj.tabActiveButton.addEventListener('click', () => {
         console.log("my name is tab " + tabObj.number + " and I was just pressed");
         activeTab = tabObj.number;
