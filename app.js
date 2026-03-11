@@ -25,6 +25,9 @@ const tabArray = [];
 // switch through tab states using the tabBar
 const tabBar = document.getElementById('tabBar');
 
+// the tab that will be open
+let activeTab = 1;
+
 // creates one instance of a tab
 function makeTabObj() {
 
@@ -244,14 +247,16 @@ function makeTabObj() {
         }
     }
 
-    // declare a tab handle
+    // define a tab handle
     tabObj.tabHandle.innerHTML = `
         <a class="tabHandle">Oscillator ${tabObj.number}</a>
     `;
+    activeTab = tabObj.number;
     
     tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabHandle');
     tabObj.tabActiveButton.addEventListener('click', () => {
-        console.log("my name is tab " + tabObj.number + " and I was just pressed")
+        console.log("my name is tab " + tabObj.number + " and I was just pressed");
+        activeTab = tabObj.number;
     })
 
     return tabObj;
@@ -263,7 +268,6 @@ function makeNewTab() {
     tabsContainer.appendChild(newTab.htmlElement);
 }
 makeNewTab();
-let activeTab = 0;
 
 // get the new tab button
 const newTabButton = document.getElementById('newTabButton');
