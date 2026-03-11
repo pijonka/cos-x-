@@ -28,32 +28,35 @@ function makeTabObj() {
     // create a new tab element with html
     const newTab = document.createElement('div');
     newTab.innerHTML = `
-                <p id="f">f(x) = </p>
+                <p class="f">f(x) = </p>
                 <div>
-                    <label for="freq">Frequency (hz)/pitch: </label>
-                    <input id="freq" type="number" value="440"></input>
+                    <label>Frequency (hz)/pitch: 
+                        <input class="freq" type="number" value="440">
+                    </label>
                 </div>
 
                 <div>
-                    <label for="amp">Amplitude/volume: </label>
-                    <input id="amp" type="number" value="1">
+                    <label>Amplitude/volume:
+                        <input class="amp" type="number" value="1">
+                    </label>
                 </div>
 
                 <div>
-                    <label for="phase">Phase</label>
-                    <input id="phase" type="number" value="0">°</input>
+                    <label>Phase
+                        <input class="phase" type="number" value="0">°
+                    </label>
                 </div>
 
-                <button id="activeButton">Start</button>
+                <button class="activeButton">Start</button>
     `;
 
     // retrieve html input
-    let freqInput = newTab.querySelector('#freq');
-    freqInput.addEventListener('input', () => {freqInput = newTab.querySelector('#freq');});
-    let ampInput = newTab.querySelector('#amp');
-    ampInput.addEventListener('input', () => {ampInput = newTab.querySelector('#amp');});
-    let phaseInput = newTab.querySelector('#phase');
-    phaseInput.addEventListener('input', () => {phaseInput = newTab.querySelector('#phase');});
+    let freqInput = newTab.querySelector('.freq');
+    freqInput.addEventListener('input', () => {freqInput = newTab.querySelector('.freq');});
+    let ampInput = newTab.querySelector('.amp');
+    ampInput.addEventListener('input', () => {ampInput = newTab.querySelector('.amp');});
+    let phaseInput = newTab.querySelector('.phase');
+    phaseInput.addEventListener('input', () => {phaseInput = newTab.querySelector('.phase');});
 
     // the tab object which will be replicated for each instance
     let tabObj = {
@@ -61,7 +64,7 @@ function makeTabObj() {
         amp: ampInput,
         phase: phaseInput,
         active: false,
-        activeButton: newTab.querySelector('#activeButton'),
+        activeButton: newTab.querySelector('.activeButton'),
         htmlElement: newTab,
         oscillator: null,
         gainNode: null,
@@ -73,7 +76,7 @@ function makeTabObj() {
     // f(x) implementation
     // (having this be a function, especially with a parameter, is absolutely redunant, but looks cool)
     function f(x) {
-        let formula = newTab.querySelector('#f');
+        let formula = newTab.querySelector('.f');
         function updateFormula() {
             formula.textContent = 'f(x) = ' + tabObj.amp.value + 'sin(2π * ' + tabObj.freq.value + '(x - ' + tabObj.phase.value + '°))'
         }
