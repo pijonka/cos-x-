@@ -242,6 +242,16 @@ function makeTabObj() {
             killWave();
         }
     }
+
+    tabObj.tabHandle.innerHTML = `
+        <a class="activeTabLink">Oscillator</a>
+    `;
+    tabObj.activeTabLink = tabObj.tabHandle.querySelector('.activeTabLink');
+
+    tabObj.tabHandle.innerHTML = `
+            <a class="inactiveTabLink">Oscillator</a>
+    `
+    tabObj.inactiveTabLink = tabObj.tabHandle.querySelector('.inactiveTabLink');
     
     return tabObj;
 }
@@ -265,20 +275,10 @@ newTabButton.addEventListener('click', () => {
     // go through each array
     for (i = 0; i < tabArray.length; i++) {
         if(i == activeTab) {
-            tabArray[i].tabHandle.innerHTML = `
-                <a class="activeTabLink">Oscillator ${i}</a>
-            `
-            let activeTabLink = tabArray[i].tabHandle.querySelector('.activeTabLink')
-            activeTabLink.addEventListener('click', () => {
-                console.log("ACTIVE link was pressed");
-            });
+            
         } else {
-            tabArray[i].tabHandle.innerHTML = `
-                <a class="inactiveTabLink">Oscillator ${i}</a>
-            `
-            let inactiveTabLink = tabArray[i].tabHandle.querySelector('.inactiveTabLink');
             inactiveTabLink.addEventListener('click', () => {
-                console.log('INACTIVE link was pressed');
+
             });
         }
 
