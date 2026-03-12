@@ -249,28 +249,14 @@ function makeTabObj() {
 
     // define a tab handle
     tabObj.tabHandle.innerHTML = `
-        <a class="tabHandle">Oscillator ${tabObj.number}</a>
+        <a class="tabActiveButton">Oscillator ${tabObj.number}</a>
     `;
-    activeTab = tabObj.number; // make sure the newest tab instance is the selected one
+    activeTab = tabObj.number;
     
-    function displayActiveTabOnly() {
-        if(activeTab === tabObj.number) {
-            tabObj.htmlElement.style.display = 'block';
-        } else {
-            for(i = 0; i < tabArray.length; i++) {
-                if(i != tabObj.number)
-                    tabArray[i].htmlElement.style.display = 'none';
-            }
-        }
-    }
-    displayActiveTabOnly()
-    
-    tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabHandle');
+    tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabActiveButton');
     tabObj.tabActiveButton.addEventListener('click', () => {
         console.log("my name is tab " + tabObj.number + " and I was just pressed");
-        activeTab = tabObj.number; 
-        displayActiveTabOnly();
-
+        activeTab = tabObj.number;
     })
 
     return tabObj;
