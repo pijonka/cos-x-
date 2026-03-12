@@ -252,11 +252,15 @@ function makeTabObj() {
         <a class="tabActiveButton">Oscillator ${tabObj.number}</a>
     `;
     activeTab = tabObj.number; // make sure the newest tab instance is the selected one
+    
     function displayActiveTabOnly() {
         if(activeTab === tabObj.number) {
             tabObj.htmlElement.style.display = 'block';
         } else {
-            
+            for(i = 0; i < tabArray.length; i++) {
+                if(i != tabObj.number)
+                    tabArray[i].htmlElement.style.display = 'none';
+            }
         }
     }
     displayActiveTabOnly()
