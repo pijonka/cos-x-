@@ -251,6 +251,8 @@ function makeTabObj() {
     tabObj.tabHandle.innerHTML = `
         <a class="tabActiveButton">Oscillator ${tabObj.number}</a>
     `;
+    tabBar.appendChild(tabObj.tabHandle);
+    
     activeTab = tabObj.number;
     
     tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabActiveButton');
@@ -277,15 +279,5 @@ newTabButton.addEventListener('click', () => {
     // give them a new tab
     makeNewTab();
 
-    // go through each array
-    for (i = 0; i < tabArray.length; i++) {
-        if(i == activeTab) {
-            
-        } else {
-
-        }
-
-        tabBar.appendChild(tabArray[i].tabHandle);
-    }
 })
 
