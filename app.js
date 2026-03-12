@@ -257,8 +257,13 @@ function makeTabObj() {
     
     tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabActiveButton');
     tabObj.tabActiveButton.addEventListener('click', () => {
-        console.log("my name is tab " + tabObj.number + " and I was just pressed");
         activeTab = tabObj.number;
+        tabObj.htmlElement.style.display = 'block';
+        for(i = 0; i < tabArray.length; i++) {
+            if(i != (activeTab - 1))
+                tabArray[i].htmlElement.style.display = 'none';
+        }
+        
     })
 
     return tabObj;
@@ -280,4 +285,3 @@ newTabButton.addEventListener('click', () => {
     makeNewTab();
 
 })
-
