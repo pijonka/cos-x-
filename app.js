@@ -249,7 +249,7 @@ function makeTabObj() {
 
     // define a tab handle
     tabObj.tabHandle.innerHTML = `
-        <a class="tabActiveButton">Oscillator ${tabObj.number}</a>
+        <a class="tabHandle">Oscillator ${tabObj.number}</a>
     `;
     activeTab = tabObj.number; // make sure the newest tab instance is the selected one
     
@@ -265,7 +265,7 @@ function makeTabObj() {
     }
     displayActiveTabOnly()
     
-    tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabActiveButton');
+    tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabHandle');
     tabObj.tabActiveButton.addEventListener('click', () => {
         console.log("my name is tab " + tabObj.number + " and I was just pressed");
         activeTab = tabObj.number; 
