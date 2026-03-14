@@ -4,7 +4,6 @@ function normalizeToRange(value) {
     return remainder >= 0 ? remainder : remainder + 1;
 }
 
-
 // create Web Audio API context
 const audioContext = new AudioContext();
 
@@ -27,6 +26,17 @@ const tabBar = document.getElementById('tabBar');
 
 // the tab that will be open
 let activeTab = 1;
+
+// function that makes the program display only the activeTab
+function isolateActiveTab() {
+    // for every element in tabArray
+    for(i = 0; i < tabArray.length; i++) {
+        if(i != (activeTab - 1)) // if the element is not the active tab
+            tabArray[i].htmlElement.style.display = 'none'; // do not display
+        else // else
+            tabArray[i].htmlElement.style.display = 'block'; // do
+    }
+}
 
 // creates one instance of a tab
 function makeTabObj() {
@@ -258,11 +268,7 @@ function makeTabObj() {
     tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabActiveButton');
     tabObj.tabActiveButton.addEventListener('click', () => {
         activeTab = tabObj.number;
-        tabObj.htmlElement.style.display = 'block';
-        for(i = 0; i < tabArray.length; i++) {
-            if(i != (activeTab - 1))
-                tabArray[i].htmlElement.style.display = 'none';
-        }
+        isolateActiveTab();
         
     })
 
