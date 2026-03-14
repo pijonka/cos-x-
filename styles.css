@@ -24,3 +24,22 @@ body {
 #tabBar {
     display: flex;
 }
+
+.tabActiveButton {
+    display: inline-block; /* make it look like a block */
+    padding: 2px; /* give it a little space */
+    
+    background-color: #181818;
+    color: #bebebe;
+
+
+}
+
+/* VS Code colors
+background: #181818
+activeTab: #1f1f1f
+outlines: #2c2c2c
+text: #bebebe
+VS code: 007ad9
+
+*/
