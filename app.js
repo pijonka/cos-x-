@@ -31,10 +31,14 @@ let activeTab = 1;
 function isolateActiveTab() {
     // for every element in tabArray
     for(i = 0; i < tabArray.length; i++) {
-        if(i != (activeTab - 1)) // if the element is not the active tab
+        if(i != (activeTab - 1)) { // if the element is not the active tab
             tabArray[i].htmlElement.style.display = 'none'; // do not display
-        else // else
+            tabArray[i].tabHandle.querySelector('a').classList.remove('activeTab');
+        }
+        else { // else 
             tabArray[i].htmlElement.style.display = 'block'; // do
+            tabArray[i].tabHandle.querySelector('a').classList.add('activeTab');
+        }
     }
 }
 
@@ -271,7 +275,7 @@ function makeTabObj() {
         isolateActiveTab();
         
     })
-
+    
     return tabObj;
 }
 

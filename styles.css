@@ -32,9 +32,13 @@ body {
     background-color: #181818;
     color: #bebebe;
     border-right: 1px solid #2c2c2c;
+    border-bottom: 2px solid #181818;
 
 }
 
+.activeTab {
+    border-bottom: 2px solid #007ad9;
+}
 
 
 /* VS Code colors
