@@ -31,9 +31,11 @@ body {
     
     background-color: #181818;
     color: #bebebe;
-
+    border-right: 1px solid #2c2c2c;
 
 }
+
+
 
 /* VS Code colors
 background: #181818
