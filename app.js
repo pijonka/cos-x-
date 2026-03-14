@@ -289,5 +289,6 @@ const newTabButton = document.getElementById('newTabButton');
 newTabButton.addEventListener('click', () => {
     // give them a new tab
     makeNewTab();
+    isolateActiveTab();
 
 })
