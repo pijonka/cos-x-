@@ -4,7 +4,6 @@ function normalizeToRange(value) {
     return remainder >= 0 ? remainder : remainder + 1;
 }
 
-
 // create Web Audio API context
 const audioContext = new AudioContext();
 
@@ -21,6 +20,23 @@ const tabsContainer = document.getElementById('tabs');
 
 // array which carries the data for all the tabs 
 const tabArray = [];
+
+// switch through tab states using the tabBar
+const tabBar = document.getElementById('tabBar');
+
+// the tab that will be open
+let activeTab = 1;
+
+// function that makes the program display only the activeTab
+function isolateActiveTab() {
+    // for every element in tabArray
+    for(i = 0; i < tabArray.length; i++) {
+        if(i != (activeTab - 1)) // if the element is not the active tab
+            tabArray[i].htmlElement.style.display = 'none'; // do not display
+        else // else
+            tabArray[i].htmlElement.style.display = 'block'; // do
+    }
+}
 
 // creates one instance of a tab
 function makeTabObj() {
@@ -69,8 +85,9 @@ function makeTabObj() {
         oscillator: null,
         gainNode: null,
         activeButtonLabel: 'stop',
-        inactiveButtonLabel: 'start'
-        
+        inactiveButtonLabel: 'start',
+        tabHandle: document.createElement('div'),
+        number: (tabArray.length + 1) 
     }
     
     // f(x) implementation
@@ -239,7 +256,22 @@ function makeTabObj() {
             killWave();
         }
     }
+
+    // define a tab handle
+    tabObj.tabHandle.innerHTML = `
+        <a class="tabActiveButton">Oscillator ${tabObj.number}</a>
+    `;
+    tabBar.appendChild(tabObj.tabHandle);
     
+    activeTab = tabObj.number;
+    
+    tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabActiveButton');
+    tabObj.tabActiveButton.addEventListener('click', () => {
+        activeTab = tabObj.number;
+        isolateActiveTab();
+        
+    })
+
     return tabObj;
 }
 
@@ -257,8 +289,6 @@ const newTabButton = document.getElementById('newTabButton');
 newTabButton.addEventListener('click', () => {
     // give them a new tab
     makeNewTab();
-    
-    // switch through tab states using the tabBar
-    const tabBar = document.getElementById('tabBar');
-    
+    isolateActiveTab();
+
 })
