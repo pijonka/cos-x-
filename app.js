@@ -285,6 +285,7 @@ function makeNewTab() {
     tabsContainer.appendChild(newTab.htmlElement);
 }
 makeNewTab();
+isolateActiveTab();
 
 // get the new tab button
 const newTabButton = document.getElementById('newTabButton');
