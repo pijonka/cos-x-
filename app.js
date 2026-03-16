@@ -99,7 +99,12 @@ function makeTabObj() {
     function f(x) {
         let formula = newTab.querySelector('.f');
         function updateFormula() {
-            formula.textContent = 'f(x) = ' + tabObj.amp.value + 'sin(2π * ' + tabObj.freq.value + '(x - ' + tabObj.phase.value + '°))'
+            const latex = `f(x) = ${tabObj.amp.value} \sin(2\pi \cdot ${tabObj.freq.value}(x - ${tabObj.phase.value}^\circ))`
+            formula.innerHTML = `\\(${latex}\\)`;
+
+            if(window.MathJax) {
+                MathJax.typesetPromise([formula]).catch((err) => console.log(err.message));
+            }
         }
         // build formula once to initialize
         updateFormula();
