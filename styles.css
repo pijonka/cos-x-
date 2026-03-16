@@ -40,6 +40,10 @@ body {
     border-bottom: 2px solid #007ad9;
 }
 
+.control-container input {
+    width: 40px;
+    
+}
 
 /* VS Code colors
 background: #181818

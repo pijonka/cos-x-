@@ -49,22 +49,23 @@ function makeTabObj() {
     const newTab = document.createElement('div');
     newTab.innerHTML = `
                 <p class="f">f(x) = </p>
-                <div>
-                    <label>Frequency (hz)/pitch: 
-                        <input class="freq" type="number" value="440">
-                    </label>
-                </div>
+                <div class="control-container">
+                    <div>
+                        <label>Frequency (hz)/pitch: 
+                            <input class="freq" type="number" value="440">
+                        </label>
 
-                <div>
-                    <label>Amplitude/volume:
-                        <input class="amp" type="number" value="1">
-                    </label>
-                </div>
+                    <div>
+                        <label>Amplitude/volume:
+                            <input class="amp" type="number" value="1">
+                        </label>
+                    </div>
 
-                <div>
-                    <label>Phase
-                        <input class="phase" type="number" value="0">°
-                    </label>
+                    <div>
+                        <label>Phase
+                            <input class="phase" type="number" value="0">°
+                        </label>
+                    </div>
                 </div>
 
                 <button class="activeButton">Start</button>
