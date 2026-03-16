@@ -50,22 +50,14 @@ function makeTabObj() {
     newTab.innerHTML = `
                 <p class="f">f(x) = </p>
                 <div class="control-container">
-                    <div>
-                        <label>Frequency (hz)/pitch: 
+                            <label>Frequency (hz)/pitch: </label>
                             <input class="freq" type="number" value="440">
-                        </label>
 
-                    <div>
-                        <label>Amplitude/volume:
+                            <label>Amplitude/volume: </label>
                             <input class="amp" type="number" value="1">
-                        </label>
-                    </div>
 
-                    <div>
-                        <label>Phase
+                            <label>Phase: </label>
                             <input class="phase" type="number" value="0">°
-                        </label>
-                    </div>
                 </div>
 
                 <button class="activeButton">Start</button>
