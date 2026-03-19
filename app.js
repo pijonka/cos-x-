@@ -27,7 +27,8 @@ const tabBar = document.getElementById('tabBar');
 // the tab that will be open
 let activeTab = 1;
 
-// function that makes the program display only the activeTab
+// function that makes the program display only the activeTab.
+// must be initialized before tab instance function
 function isolateActiveTab() {
     // for every element in tabArray
     for(i = 0; i < tabArray.length; i++) {
