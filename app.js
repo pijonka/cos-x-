@@ -88,7 +88,7 @@ function makeTabObj() {
         activeButtonLabel: 'stop',
         inactiveButtonLabel: 'start',
         tabHandle: document.createElement('div'),
-        number: (tabArray.length + 1) 
+        number: (tabArray.length + 1) // tab array PLUS ONE
     }
     
     // f(x) implementation
