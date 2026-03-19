@@ -151,10 +151,10 @@ function makeTabObj() {
         // tabObj.oscillator.phase.value = tabObj.phase.value;
 
         // connect the (NODE)s
-        tabObj.oscillator.connect(analyser);
-        analyser.connect(tabObj.gainNode);
+        tabObj.oscillator.connect(tabObj.gainNode);
+        tabObj.gainNode.connect(analyser);
         tabObj.gainNode.connect(audioContext.destination);
-        // oscillator (input) --> analyser --> gain --> destination (output)
+        // oscillator (input) --> gain --> analyser --> destination (output)
         tabObj.oscillator.start(when);
         
         // the button must now display "stop"
