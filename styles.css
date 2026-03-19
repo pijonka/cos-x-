@@ -1,6 +1,7 @@
 body {
     display: flex;
     height: 100vh;
+    font-family: Helvetica, sans-serif
 }
 
 #graph {
@@ -21,3 +22,61 @@ body {
     box-sizing: border-box;
 }
 
+#tabBar {
+    display: flex;
+}
+
+#newTabButton {
+    cursor: pointer;
+    background-color: rgb(209, 209, 209);
+    color: rgb(0, 0, 0);
+}
+
+#newTabButton:hover {
+    background-color: rgb(228, 228, 228);
+}
+
+.tabActiveButton {
+    display: inline-block; /* make it look like a block */
+    padding: 2px; /* give it a little space */
+    
+    background-color: rgb(209, 209, 209);
+    color: rgb(0, 0, 0);
+    border-right: 1px solid #000000;
+    border-bottom: 2px solid #9e9e9e;
+    cursor: pointer;
+
+
+
+}
+
+.tabActiveButton:hover {
+    background-color: rgb(228, 228, 228);
+}
+
+.activeTab {
+    border-bottom: 2px solid rgb(0, 0, 0);
+}
+
+#body-container {
+    padding: 10px
+}
+
+.control-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.control-container input {
+    width: 40px;
+    
+}
+
+/* VS Code colors
+background: #181818
+activeTab: #1f1f1f
+outlines: #2c2c2c
+text: #bebebe
+VS code: 007ad9
+
+*/

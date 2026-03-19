@@ -31,10 +31,14 @@ let activeTab = 1;
 function isolateActiveTab() {
     // for every element in tabArray
     for(i = 0; i < tabArray.length; i++) {
-        if(i != (activeTab - 1)) // if the element is not the active tab
+        if(i != (activeTab - 1)) { // if the element is not the active tab
             tabArray[i].htmlElement.style.display = 'none'; // do not display
-        else // else
+            tabArray[i].tabHandle.querySelector('a').classList.remove('activeTab');
+        }
+        else { // else 
             tabArray[i].htmlElement.style.display = 'block'; // do
+            tabArray[i].tabHandle.querySelector('a').classList.add('activeTab');
+        }
     }
 }
 
@@ -45,22 +49,18 @@ function makeTabObj() {
     const newTab = document.createElement('div');
     newTab.innerHTML = `
                 <p class="f">f(x) = </p>
-                <div>
-                    <label>Frequency (hz)/pitch: 
-                        <input class="freq" type="number" value="440">
-                    </label>
-                </div>
+                <div class="control-container">
+                    <label>Frequency (hz)/pitch: </label>
+                    <input class="freq" type="number" value="440">
 
-                <div>
-                    <label>Amplitude/volume:
-                        <input class="amp" type="number" value="1">
-                    </label>
-                </div>
+                    <label>Amplitude/volume: </label>
+                    <input class="amp" type="number" value="1">
 
-                <div>
-                    <label>Phase
+                    <label>Phase: </label>
+                    <div class="input-wrapper">
                         <input class="phase" type="number" value="0">°
-                    </label>
+                    </div>
+
                 </div>
 
                 <button class="activeButton">Start</button>
@@ -95,7 +95,12 @@ function makeTabObj() {
     function f(x) {
         let formula = newTab.querySelector('.f');
         function updateFormula() {
-            formula.textContent = 'f(x) = ' + tabObj.amp.value + 'sin(2π * ' + tabObj.freq.value + '(x - ' + tabObj.phase.value + '°))'
+            const latex = `f(x) = ${tabObj.amp.value} \\sin(2\\pi \\cdot ${tabObj.freq.value}(x - ${tabObj.phase.value}^\\circ))`
+            formula.innerHTML = `\\(${latex}\\)`;
+
+            if(window.MathJax) {
+                MathJax.typesetPromise([formula]).catch((err) => console.log(err.message));
+            }
         }
         // build formula once to initialize
         updateFormula();
@@ -271,7 +276,7 @@ function makeTabObj() {
         isolateActiveTab();
         
     })
-
+    
     return tabObj;
 }
 
@@ -281,6 +286,7 @@ function makeNewTab() {
     tabsContainer.appendChild(newTab.htmlElement);
 }
 makeNewTab();
+isolateActiveTab();
 
 // get the new tab button
 const newTabButton = document.getElementById('newTabButton');
