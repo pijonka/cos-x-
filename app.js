@@ -265,8 +265,9 @@ function makeTabObj() {
 
     // define a tab handle
     tabObj.tabHandle.innerHTML = `
-        <a class="tabActiveButton">Oscillator ${tabObj.number}</a>
+        <a class="tabActiveButton">Oscillator ${tabObj.number}</a><button class="closeTabButton">X</button>
     `;
+
     tabBar.appendChild(tabObj.tabHandle);
     
     activeTab = tabObj.number;
@@ -276,6 +277,11 @@ function makeTabObj() {
         activeTab = tabObj.number;
         isolateActiveTab();
         
+    })
+
+    tabObj.tabCloseButton = tabObj.tabHandle.querySelector('.closeTabButton');
+    tabObj.tabCloseButton.addEventListener('click', () => {
+        Array.remove((tabObj.number - 1));
     })
     
     return tabObj;
