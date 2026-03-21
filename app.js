@@ -66,14 +66,15 @@ function makeTabObj() {
 
                 <button class="activeButton">Start</button>
     `;
-
+    // create a controller ATTACHED TO THE OBJECT?
+    const controller = new AbortController();
     // retrieve html input
     let freqInput = newTab.querySelector('.freq');
-    freqInput.addEventListener('input', () => {freqInput = newTab.querySelector('.freq');});
+    freqInput.addEventListener('input', () => {freqInput = newTab.querySelector('.freq');}, {signal: controller.signal});
     let ampInput = newTab.querySelector('.amp');
-    ampInput.addEventListener('input', () => {ampInput = newTab.querySelector('.amp');});
+    ampInput.addEventListener('input', () => {ampInput = newTab.querySelector('.amp');}, {signal: controller.signal} );
     let phaseInput = newTab.querySelector('.phase');
-    phaseInput.addEventListener('input', () => {phaseInput = newTab.querySelector('.phase');});
+    phaseInput.addEventListener('input', () => {phaseInput = newTab.querySelector('.phase');}, {signal: controller.signal});
 
     // the tab object which will be replicated for each instance
     let tabObj = {
@@ -109,13 +110,13 @@ function makeTabObj() {
         // then build again consequence of input
         freqInput.addEventListener('input', () => {
             updateFormula()
-        })
+        }, {signal: controller.signal})
         ampInput.addEventListener('input', () => {
             updateFormula();
-        });
+        }, {signal: controller.signal});
         phaseInput.addEventListener('input', () => {
             updateFormula();
-        });
+        }, {signal: controller.signal});
 
         return x;
     }
@@ -227,7 +228,7 @@ function makeTabObj() {
     tabObj.activeButton.addEventListener('click', () => {
         tabObj.active = !tabObj.active;
         activateWave();
-    });
+    }, {signal: controller.signal});
 
     function activateWave() {
             if(tabObj.active) {
@@ -276,14 +277,16 @@ function makeTabObj() {
     tabObj.tabActiveButton.addEventListener('click', () => {
         activeTab = tabObj.number;
         isolateActiveTab();
+        console.log("does this do anything now?");
         
-    })
+    }, {signal: controller.signal})
 
     tabObj.tabCloseButton = tabObj.tabHandle.querySelector('.tabCloseButton');
     tabObj.tabCloseButton.addEventListener('click', () => {
-        tabObj.innerHTML = '';
-        tabObj.tabHandle.innerHTML = '';
+        //tabObj.innerHTML = '';
+        // tabObj.tabHandle.innerHTML = '';
         tabArray.splice((tabObj.number - 1), 1);
+        controller.abort();
     })
     
     return tabObj;
