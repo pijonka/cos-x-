@@ -32,7 +32,7 @@ let activeTab = 1;
 function isolateActiveTab() {
     // for every element in tabArray
     for(i = 0; i < tabArray.length; i++) {
-        if(i != (activeTab - 1)) { // if the element is not the active tab
+        if(i != (activeTab)) { // if the element is not the active tab
             tabArray[i].htmlElement.style.display = 'none'; // do not display
             tabArray[i].tabHandle.querySelector('a').classList.remove('activeTab');
         }
@@ -89,7 +89,6 @@ function makeTabObj() {
         activeButtonLabel: 'stop',
         inactiveButtonLabel: 'start',
         tabHandle: document.createElement('div'),
-        number: (tabArray.length + 1) // tab array PLUS ONE
     }
     
     // f(x) implementation
@@ -265,18 +264,19 @@ function makeTabObj() {
     }
 
     function declareTabHandle() {
+        const index = tabArray.indexOf(tabObj)
         // define a tab handle
         tabObj.tabHandle.innerHTML = `
-            <a class="tabActiveButton">Oscillator ${tabObj.number}</a><button class="tabCloseButton">X</button>
+            <a class="tabActiveButton">Oscillator ${index + 1}</a><button class="tabCloseButton">X</button>
         `;
 
         tabBar.appendChild(tabObj.tabHandle);
         
-        activeTab = tabObj.number;
+        activeTab = tabArray.indexOf(tabObj);
     
         tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabActiveButton');
         tabObj.tabActiveButton.addEventListener('click', () => {
-            activeTab = tabObj.number;
+            activeTab = tabArray.indexOf(tabObj);
             isolateActiveTab();
             
         }, {signal: controller.signal})
@@ -308,7 +308,7 @@ function makeTabObj() {
                 // and if there are multiple tabs
                 
                     // destroy this tab's activeness too
-                    activeTab = tabArray[Math.max(0, index - 1)].number;
+                    activeTab = Math.max(1, index)
                     isolateActiveTab();
             }
         })
