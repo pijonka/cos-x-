@@ -277,16 +277,28 @@ function makeTabObj() {
     tabObj.tabActiveButton.addEventListener('click', () => {
         activeTab = tabObj.number;
         isolateActiveTab();
-        console.log("does this do anything now?");
         
     }, {signal: controller.signal})
 
     tabObj.tabCloseButton = tabObj.tabHandle.querySelector('.tabCloseButton');
     tabObj.tabCloseButton.addEventListener('click', () => {
-        //tabObj.innerHTML = '';
-        // tabObj.tabHandle.innerHTML = '';
+        // first stop the wave (obviously)
+        killWave();
+        // define the index of the object
+        const index = (tabObj.number - 1)
+        // destroy this object instance in the array
         tabArray.splice((tabObj.number - 1), 1);
+        // destroy the DOM elements
+        tabObj.htmlElement.remove();
+        tabObj.tabHandle.remove();
+        // destroy the event listeners
         controller.abort();
+        // and if there are multiple tabs
+        if(tabArray.length > 0) {
+            // destroy this tab's activeness too
+            activeTab = tabArray[tabArray.length - 1].number;
+            isolateActiveTab();
+        }
     })
     
     return tabObj;
