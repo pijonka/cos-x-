@@ -264,42 +264,57 @@ function makeTabObj() {
         }
     }
 
-    // define a tab handle
-    tabObj.tabHandle.innerHTML = `
-        <a class="tabActiveButton">Oscillator ${tabObj.number}</a><button class="tabCloseButton">X</button>
-    `;
+    function declareTabHandle() {
+        // define a tab handle
+        tabObj.tabHandle.innerHTML = `
+            <a class="tabActiveButton">Oscillator ${tabObj.number}</a><button class="tabCloseButton">X</button>
+        `;
 
-    tabBar.appendChild(tabObj.tabHandle);
-    
-    activeTab = tabObj.number;
-    
-    tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabActiveButton');
-    tabObj.tabActiveButton.addEventListener('click', () => {
-        activeTab = tabObj.number;
-        isolateActiveTab();
+        tabBar.appendChild(tabObj.tabHandle);
         
-    }, {signal: controller.signal})
-
-    tabObj.tabCloseButton = tabObj.tabHandle.querySelector('.tabCloseButton');
-    tabObj.tabCloseButton.addEventListener('click', () => {
-        // first stop the wave (obviously)
-        killWave();
-        // define the index of the object
-        const index = (tabObj.number - 1)
-        // destroy this object instance in the array
-        tabArray.splice((tabObj.number - 1), 1);
-        // destroy the DOM elements
-        tabObj.htmlElement.remove();
-        tabObj.tabHandle.remove();
-        // destroy the event listeners
-        controller.abort();
-        // and if there are multiple tabs
-        if(tabArray.length > 0) {
-            // destroy this tab's activeness too
-            activeTab = tabArray[tabArray.length - 1].number;
+        activeTab = tabObj.number;
+    
+        tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabActiveButton');
+        tabObj.tabActiveButton.addEventListener('click', () => {
+            activeTab = tabObj.number;
             isolateActiveTab();
-        }
-    })
+            
+        }, {signal: controller.signal})
+
+        tabObj.tabCloseButton = tabObj.tabHandle.querySelector('.tabCloseButton');
+        tabObj.tabCloseButton.addEventListener('click', () => {
+            if(tabArray.length > 0) {
+                // first stop the wave (obviously)
+                killWave();
+
+                // define the index of the object
+                const index = tabArray.indexOf(tabObj);
+
+                if(index !== -1)
+                    // destroy this object instance in the array
+                    tabArray.splice(index, 1);
+                
+                // destroy the DOM element
+                tabObj.htmlElement.remove();
+                tabObj.tabHandle.remove();
+                for(i = 0; i < tabArray.length; i++) {
+                    tabArray[i].tabHandle.remove();
+                    tabArray[i].declareTabHandle();
+                }
+
+                // destroy the event listeners
+                controller.abort();
+                
+                // and if there are multiple tabs
+                
+                    // destroy this tab's activeness too
+                    activeTab = tabArray[Math.max(0, index - 1)].number;
+                    isolateActiveTab();
+            }
+        })
+    }
+    declareTabHandle();
+    
     
     return tabObj;
 }
