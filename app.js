@@ -281,18 +281,18 @@ function makeTabObj() {
     }, {signal: controller.signal})
 
     // create a function that updates all values for tab closing (maybe should be more than tab closing?)
-    function objUpdate() {
+    function objUpdate(index) {
         // remove the now outdated attributes
-        tabObj.tabHandle.remove();
-        tabObj.number = tabArray.indexOf(tabObj);
+        tabArray[index].tabHandle.remove();
+        tabArray[index].number = tabArray.indexOf(tabArray[index]);
 
         // reassign the tab handle with the new number
         tabObj.tabHandle.innerHTML = `
-        <a class="tabActiveButton">Oscillator ${tabObj.number}</a><button class="tabCloseButton">X</button>
+        <a class="tabActiveButton">Oscillator ${tabArray[index].number}</a><button class="tabCloseButton">X</button>
         `;
 
         // append the new elment
-        tabBar.appendChild(tabObj.tabHandle);
+        tabBar.appendChild(tabArray[index].tabHandle);
         
     }
 
@@ -312,7 +312,7 @@ function makeTabObj() {
         // and for every element that is not this one in tabArray
         for (i = 0; i < tabArray.length; i++) {
             if(i != tabArray.indexOf(tabObj)) {
-                tabArray[i].objUpdate();
+                objUpdate(i)
             }
         }
 
