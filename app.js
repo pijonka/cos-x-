@@ -280,25 +280,42 @@ function makeTabObj() {
         
     }, {signal: controller.signal})
 
+    // create a function that updates all values for tab closing (maybe should be more than tab closing?)
+    function objUpdate() {
+        // remove the now outdated attributes
+        tabObj.tabHandle.remove();
+        tabObj.number = tabArray.indexOf(tabObj);
+
+        // reassign the tab handle with the new number
+        tabObj.tabHandle.innerHTML = `
+        <a class="tabActiveButton">Oscillator ${tabObj.number}</a><button class="tabCloseButton">X</button>
+        `;
+
+        // append the new elment
+        tabBar.appendChild(tabObj.tabHandle);
+        
+    }
+
     tabObj.tabCloseButton = tabObj.tabHandle.querySelector('.tabCloseButton');
     tabObj.tabCloseButton.addEventListener('click', () => {
         // first stop the wave (obviously)
         killWave();
         // define the index of the object
-        const index = (tabObj.number - 1)
         // destroy this object instance in the array
-        tabArray.splice((tabObj.number - 1), 1);
+        tabArray.splice(tabArray.indexOf(tabObj), 1);
         // destroy the DOM elements
         tabObj.htmlElement.remove();
         tabObj.tabHandle.remove();
         // destroy the event listeners
         controller.abort();
-        // and if there are multiple tabs
-        if(tabArray.length > 0) {
-            // destroy this tab's activeness too
-            activeTab = tabArray[tabArray.length - 1].number;
-            isolateActiveTab();
+
+        // and for every element that is not this one in tabArray
+        for (i = 0; i < tabArray.length; i++) {
+            if(i != tabArray.indexOf(tabObj)) {
+                tabArray[i].objUpdate();
+            }
         }
+
     })
     
     return tabObj;
