@@ -55,11 +55,41 @@ function objUpdate(index) {
     <a class="tabActiveButton">Oscillator ${tabArray[index].number}</a><button class="tabCloseButton">X</button>
     `;
 
+    tabArray[index].tabActiveButton = tabArray[index].tabHandle.querySelector('.tabActiveButton');
+    tabArray[index].tabActiveButton.addEventListener('click', () => {
+        activeTab = tabArray[index].number;
+        isolateActiveTab();
+        
+    })
+
+    tabArray[index].tabCloseButton = tabArray[index].tabHandle.querySelector('.tabCloseButton');
+    tabArray[index].tabCloseButton.addEventListener('click', () => {
+        // first stop the wave (obviously)
+        killWave();
+        // define the index of the object
+        // destroy this object instance in the array
+        tabArray.splice(tabArray.indexOf(tabObj), 1);
+        // destroy the DOM elements
+        tabArray[index].htmlElement.remove();
+        tabArray[index].tabHandle.remove();
+        // destroy the event listeners
+
+        // and for every element that is not this one in tabArray
+        for (i = 0; i < tabArray.length; i++) {
+            if(i != tabArray.indexOf(tabObj)) {
+                objUpdate(i) // update values with new elements
+            }
+        }
+        activeTab = 1;
+        tabArray[index] = {};
+
+    })
+
     // append the new elment
     tabsContainer.appendChild(tabArray[index].htmlElement)
     tabBar.appendChild(tabArray[index].tabHandle);
     
-
+    
     
 }
 
