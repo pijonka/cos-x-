@@ -24,7 +24,7 @@ const tabArray = [];
 // switch through tab states using the tabBar
 const tabBar = document.getElementById('tabBar');
 
-// the tab that will be open
+// (one-based) tab that will be open
 let activeTab = 1;
 
 // function that makes the program display only the activeTab.
@@ -41,6 +41,26 @@ function isolateActiveTab() {
             tabArray[i].tabHandle.querySelector('a').classList.add('activeTab');
         }
     }
+}
+
+// create a function that updates all values for tab closing (maybe should be more than tab closing?)
+function objUpdate(index) {
+    // remove the now outdated attributes
+    tabArray[index].htmlElement.remove();
+    tabArray[index].tabHandle.remove();
+    tabArray[index].number = (tabArray.indexOf(tabArray[index]) + 1);
+
+    // reassign the tab handle with the new number
+    tabArray[index].tabHandle.innerHTML = `
+    <a class="tabActiveButton">Oscillator ${tabArray[index].number}</a><button class="tabCloseButton">X</button>
+    `;
+
+    // append the new elment
+    tabsContainer.appendChild(tabArray[index].htmlElement)
+    tabBar.appendChild(tabArray[index].tabHandle);
+    
+
+    
 }
 
 // creates one instance of a tab
@@ -280,24 +300,6 @@ function makeTabObj() {
         
     }, {signal: controller.signal})
 
-    // create a function that updates all values for tab closing (maybe should be more than tab closing?)
-    function objUpdate(index) {
-        // remove the now outdated attributes
-        tabArray[index].htmlElement.remove();
-        tabArray[index].tabHandle.remove();
-        tabArray[index].number = (tabArray.indexOf(tabArray[index]) + 1);
-
-        // reassign the tab handle with the new number
-        tabArray[index].tabHandle.innerHTML = `
-        <a class="tabActiveButton">Oscillator ${tabArray[index].number}</a><button class="tabCloseButton">X</button>
-        `;
-
-        // append the new elment
-        tabsContainer.appendChild(tabArray[index].htmlElement)
-        tabBar.appendChild(tabArray[index].tabHandle);
-        
-    }
-
     tabObj.tabCloseButton = tabObj.tabHandle.querySelector('.tabCloseButton');
     tabObj.tabCloseButton.addEventListener('click', () => {
         // first stop the wave (obviously)
@@ -314,9 +316,11 @@ function makeTabObj() {
         // and for every element that is not this one in tabArray
         for (i = 0; i < tabArray.length; i++) {
             if(i != tabArray.indexOf(tabObj)) {
-                objUpdate(i)
+                objUpdate(i) // update values with new elements
             }
         }
+        activeTab = 1;
+        tabObj = {};
 
     })
     
