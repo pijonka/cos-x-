@@ -43,6 +43,48 @@ function isolateActiveTab() {
     }
 }
 
+function defineTabHandle(obj) {
+    // define a tab handle
+    obj.tabHandle.innerHTML = `
+        <a class="tabActiveButton">Oscillator ${obj.number}</a><button class="tabCloseButton">X</button>
+    `;
+
+    tabBar.appendChild(obj);
+    
+    activeTab = obj.number;
+    
+    obj.tabActiveButton = obj.tabHandle.querySelector('.tabActiveButton');
+    obj.tabActiveButton.addEventListener('click', () => {
+        activeTab = obj.number;
+        isolateActiveTab();
+        
+    }, {signal: obj.controller.signal})
+
+    obj.tabCloseButton = obj.tabHandle.querySelector('.tabCloseButton');
+    obj.tabCloseButton.addEventListener('click', () => {
+        // first stop the wave (obviously)
+        killWave();
+        // define the index of the object
+        // destroy this object instance in the array
+        tabArray.splice(tabArray.indexOf(obj), 1);
+        // destroy the DOM elements
+        obj.htmlElement.remove();
+        obj.tabHandle.remove();
+        // destroy the event listeners
+        obj.controller.abort();
+
+        // and for every element that is not this one in tabArray
+        for (i = 0; i < tabArray.length; i++) {
+            if(i != tabArray.indexOf(obj)) {
+                objUpdate(i) // update values with new elements
+            }
+        }
+        activeTab = 1;
+        obj = {};
+
+    })
+}
+
 // create a function that updates all values for tab closing (maybe should be more than tab closing?)
 function objUpdate(index) {
     // remove the now outdated attributes
@@ -50,46 +92,11 @@ function objUpdate(index) {
     tabArray[index].tabHandle.remove();
     tabArray[index].number = (tabArray.indexOf(tabArray[index]) + 1);
 
-    // reassign the tab handle with the new number
-    tabArray[index].tabHandle.innerHTML = `
-    <a class="tabActiveButton">Oscillator ${tabArray[index].number}</a><button class="tabCloseButton">X</button>
-    `;
-
-    tabArray[index].tabActiveButton = tabArray[index].tabHandle.querySelector('.tabActiveButton');
-    tabArray[index].tabActiveButton.addEventListener('click', () => {
-        activeTab = tabArray[index].number;
-        isolateActiveTab();
-        
-    })
-
-    tabArray[index].tabCloseButton = tabArray[index].tabHandle.querySelector('.tabCloseButton');
-    tabArray[index].tabCloseButton.addEventListener('click', () => {
-        // first stop the wave (obviously)
-        killWave();
-        // define the index of the object
-        // destroy this object instance in the array
-        tabArray.splice(tabArray.indexOf(tabObj), 1);
-        // destroy the DOM elements
-        tabArray[index].htmlElement.remove();
-        tabArray[index].tabHandle.remove();
-        // destroy the event listeners
-
-        // and for every element that is not this one in tabArray
-        for (i = 0; i < tabArray.length; i++) {
-            if(i != tabArray.indexOf(tabObj)) {
-                objUpdate(i) // update values with new elements
-            }
-        }
-        activeTab = 1;
-        tabArray[index] = {};
-
-    })
+    defineTabHandle()
 
     // append the new elment
     tabsContainer.appendChild(tabArray[index].htmlElement)
     tabBar.appendChild(tabArray[index].tabHandle);
-    
-    
     
 }
 
@@ -116,18 +123,21 @@ function makeTabObj() {
 
                 <button class="activeButton">Start</button>
     `;
+
+    let tabObj;
     // create a controller ATTACHED TO THE OBJECT?
-    const controller = new AbortController();
+    tabObj.controller = new AbortController();
+
     // retrieve html input
     let freqInput = newTab.querySelector('.freq');
-    freqInput.addEventListener('input', () => {freqInput = newTab.querySelector('.freq');}, {signal: controller.signal});
+    freqInput.addEventListener('input', () => {freqInput = newTab.querySelector('.freq');}, {signal: tabObj.controller.signal});
     let ampInput = newTab.querySelector('.amp');
-    ampInput.addEventListener('input', () => {ampInput = newTab.querySelector('.amp');}, {signal: controller.signal} );
+    ampInput.addEventListener('input', () => {ampInput = newTab.querySelector('.amp');}, {signal: tabObj.controller.signal} );
     let phaseInput = newTab.querySelector('.phase');
-    phaseInput.addEventListener('input', () => {phaseInput = newTab.querySelector('.phase');}, {signal: controller.signal});
+    phaseInput.addEventListener('input', () => {phaseInput = newTab.querySelector('.phase');}, {signal: tabObj.controller.signal});
 
     // the tab object which will be replicated for each instance
-    let tabObj = {
+    tabObj = {
         freq: freqInput,
         amp: ampInput,
         phase: phaseInput,
@@ -160,13 +170,13 @@ function makeTabObj() {
         // then build again consequence of input
         freqInput.addEventListener('input', () => {
             updateFormula()
-        }, {signal: controller.signal})
+        }, {signal: tabObj.controller.signal})
         ampInput.addEventListener('input', () => {
             updateFormula();
-        }, {signal: controller.signal});
+        }, {signal: tabObj.controller.signal});
         phaseInput.addEventListener('input', () => {
             updateFormula();
-        }, {signal: controller.signal});
+        }, {signal: tabObj.controller.signal});
 
         return x;
     }
@@ -278,7 +288,7 @@ function makeTabObj() {
     tabObj.activeButton.addEventListener('click', () => {
         tabObj.active = !tabObj.active;
         activateWave();
-    }, {signal: controller.signal});
+    }, {signal: tabObj.controller.signal});
 
     function activateWave() {
             if(tabObj.active) {
@@ -314,45 +324,8 @@ function makeTabObj() {
         }
     }
 
-    // define a tab handle
-    tabObj.tabHandle.innerHTML = `
-        <a class="tabActiveButton">Oscillator ${tabObj.number}</a><button class="tabCloseButton">X</button>
-    `;
 
-    tabBar.appendChild(tabObj.tabHandle);
-    
-    activeTab = tabObj.number;
-    
-    tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabActiveButton');
-    tabObj.tabActiveButton.addEventListener('click', () => {
-        activeTab = tabObj.number;
-        isolateActiveTab();
-        
-    }, {signal: controller.signal})
 
-    tabObj.tabCloseButton = tabObj.tabHandle.querySelector('.tabCloseButton');
-    tabObj.tabCloseButton.addEventListener('click', () => {
-        // first stop the wave (obviously)
-        killWave();
-        // define the index of the object
-        // destroy this object instance in the array
-        tabArray.splice(tabArray.indexOf(tabObj), 1);
-        // destroy the DOM elements
-        tabObj.htmlElement.remove();
-        tabObj.tabHandle.remove();
-        // destroy the event listeners
-        controller.abort();
-
-        // and for every element that is not this one in tabArray
-        for (i = 0; i < tabArray.length; i++) {
-            if(i != tabArray.indexOf(tabObj)) {
-                objUpdate(i) // update values with new elements
-            }
-        }
-        activeTab = 1;
-        tabObj = {};
-
-    })
     
     return tabObj;
 }
