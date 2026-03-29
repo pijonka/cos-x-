@@ -81,6 +81,8 @@ function defineTabHandle(obj) {
         obj = {};
 
     })
+
+    tabBar.appendChild(obj.tabHandle);
     
 }
 
