@@ -27,6 +27,21 @@ const tabBar = document.getElementById('tabBar');
 // (one-based) tab that will be open
 let activeTab = 1;
 
+
+function killWave(obj) {
+    if (obj.oscillator){
+        obj.oscillator.stop();
+        obj.oscillator.disconnect();
+    }
+    if(obj.gainNode) {
+        obj.gainNode.disconnect();
+    }
+
+    obj.activeButton.textContent = obj.inactiveButtonLabel;
+
+}
+
+
 // function that makes the program display only the activeTab.
 // must be initialized before tab instance function
 function isolateActiveTab() {
@@ -61,7 +76,7 @@ function defineTabHandle(obj) {
     obj.tabCloseButton = obj.tabHandle.querySelector('.tabCloseButton');
     obj.tabCloseButton.addEventListener('click', () => {
         // first stop the wave (obviously)
-        killWave();
+        killWave(obj);
         // define the index of the object
         // destroy this object instance in the array
         tabArray.splice(tabArray.indexOf(obj), 1);
@@ -69,7 +84,7 @@ function defineTabHandle(obj) {
         obj.htmlElement.remove();
         obj.tabHandle.remove();
         // destroy the event listeners
-        controller.abort(); // THIS DOESN'T WORK
+        // controller.abort(); // THIS DOESN'T WORK
 
         // and for every element that is not this one in tabArray
         for (let i = 0; i < tabArray.length; i++) {
@@ -263,23 +278,11 @@ function makeTabObj() {
         draw();
         
     }
-
-    function killWave() {
-        if (tabObj.oscillator){
-            tabObj.oscillator.stop();
-            tabObj.oscillator.disconnect();
-        }
-        if(tabObj.gainNode) {
-            tabObj.gainNode.disconnect();
-        }
-
-        tabObj.activeButton.textContent = tabObj.inactiveButtonLabel;
-
-    }
+    
 
     // function calling
     createWave();
-    killWave();
+    killWave(tabObj);
 
 
 
@@ -322,7 +325,7 @@ function makeTabObj() {
             // pass start time
             createWave(tabObj.startWhen)
         } else {
-            killWave();
+            killWave(tabObj);
         }
     }
 
