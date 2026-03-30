@@ -30,15 +30,53 @@ let activeTab = 1;
 class tabObj {
     constructor() { // the method that runs everytime a new instance is initialized
         // define main html element
-        // define index ?
-        // call html extractor function
+        this.htmlBody = document.createElement('div')
+        this.htmlBody.innerHTML = `
+                <p class="f">f(x) = </p>
+                <div class="control-container">
+                    <label>Frequency (hz)/pitch: </label>
+                    <input class="freq" type="number" value="440">
+
+                    <label>Amplitude/volume: </label>
+                    <input class="amp" type="number" value="1">
+
+                    <label>Phase: </label>
+                    <div class="input-wrapper">
+                        <input class="phase" type="number" value="0">°
+                    </div>
+
+                </div>
+
+                <button class="activeButton">Start</button>
+        `;
+        // grab references
+        this.freqInit = this.htmlBody.querySelector('.freq');
+        this.ampInit = this.htmlBody.querySelector('.amp');
+        this.phaseInit = this.htmlBody.querySelector('.phase');
+        this.activeButton = this.htmlBody.querySelector('.activeButton');
+
+        // set up listeners
+        this.initListeners();
+
+
         // call f(x) function
 
     }
 
-    // define f(x) function
+    get freq() { return Number(this.freqInit.value); }
+    get amp() { return Number(this.ampInit.value); }
+    get phase() { return Number(this.phaseInit.value); }
+
+    initListeners() {
+        this.activeButton.addEventListener('click', () => {
+            this.active = !this.active;
+            // wave function call
+        })
+    }
+
     
-    // define a function that extracts values from html (updates with every call)
+
+    // define f(x) function
     
     // define create wave function
 
@@ -50,9 +88,9 @@ class tabObj {
 }
 
 function makeNewTab() {
-    const newTab = makeTabObj();
+    const newTab = new tabObj
     tabArray.push(newTab);
-    tabsContainer.appendChild(newTab.htmlElement);
+    tabsContainer.appendChild(newTab.htmlBody);
 }
 makeNewTab();
 isolateActiveTab();
