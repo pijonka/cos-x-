@@ -54,12 +54,14 @@ class tabObj {
         this.ampInit = this.htmlBody.querySelector('.amp');
         this.phaseInit = this.htmlBody.querySelector('.phase');
         this.activeButton = this.htmlBody.querySelector('.activeButton');
+        this.formulaDisplay = this.htmlBody.querySelector('.f');
 
         // set up listeners
         this.initListeners();
 
 
         // call f(x) function
+        this.f()
 
     }
 
@@ -74,9 +76,17 @@ class tabObj {
         })
     }
 
-    
+    // update formula function
+    f(x) {
+        const latex = `f(x) = ${this.amp} \\sin(2\\pi \\cdot ${this.freq}(x - ${this.phase}^\\circ))`;
+        this.formulaDisplay.innerHTML = `\\(${latex}\\)`
 
-    // define f(x) function
+        // latex equation
+        if(window.MathJax) {
+                MathJax.typesetPromise([this.formulaDisplay]).catch((err) => console.log(err.message));
+        }
+    }
+
     
     // define create wave function
 
@@ -93,7 +103,7 @@ function makeNewTab() {
     tabsContainer.appendChild(newTab.htmlBody);
 }
 makeNewTab();
-isolateActiveTab();
+// isolateActiveTab();
 
 // get the new tab button
 const newTabButton = document.getElementById('newTabButton');
