@@ -27,7 +27,27 @@ const tabBar = document.getElementById('tabBar');
 // (one-based) tab that will be open
 let activeTab = 1;
 
+class tabObj {
+    constructor() { // the method that runs everytime a new instance is initialized
+        // define main html element
+        // define index ?
+        // call html extractor function
+        // call f(x) function
 
+    }
+
+    // define f(x) function
+    
+    // define a function that extracts values from html (updates with every call)
+    
+    // define create wave function
+
+    // define active button function?
+
+    // define tab handle function
+
+    // define activate wave function
+}
 
 function makeNewTab() {
     const newTab = makeTabObj();
