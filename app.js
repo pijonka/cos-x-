@@ -74,6 +74,20 @@ class tabObj {
             this.active = !this.active;
             // wave function call
         })
+
+        // SECTION update the formula whenever input is given
+        this.freqInit.addEventListener('input', () => {
+            this.f();
+        });
+
+        this.ampInit.addEventListener('input', () => {
+            this.f();
+        });
+
+        this.phaseInit.addEventListener('input', () => {
+            this.f();
+        });
+
     }
 
     // update formula function
