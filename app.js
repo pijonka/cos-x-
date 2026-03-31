@@ -38,7 +38,7 @@ class tabObj {
                     <input class="freq" type="number" value="440">
 
                     <label>Amplitude/volume: </label>
-                    <input class="amp" type="number" value="1">
+                    <input class="amp" type="number" value="0.1" step="0.1">
 
                     <label>Phase: </label>
                     <div class="input-wrapper">
