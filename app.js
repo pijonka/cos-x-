@@ -63,6 +63,13 @@ class tabObj {
         // call f(x) function
         this.f()
 
+        this.activeButtonLabel = 'stop';
+        this.inactiveButtonLabel = 'start';
+
+        // create and kill the wave
+        this.createWave(audioContext.currentTime);
+        // this.killWave();
+
     }
 
     get freq() { return Number(this.freqInit.value); }
@@ -120,12 +127,12 @@ class tabObj {
         const dataArray = new Uint8Array(bufferLength);
         
         // Set the frequency for the oscillator
-        this.oscillator.frequency.value = this.freq.value;
+        this.oscillator.frequency.value = this.freq;
 
         // Set the amplitude for the oscillator
         // (NODE)
         this.gainNode = audioContext.createGain(); 
-        this.gainNode.gain.setValueAtTime(this.amp.value, audioContext.currentTime);
+        this.gainNode.gain.setValueAtTime(this.amp, audioContext.currentTime);
         
         // set the phase for the oscillator
         // tabObj.oscillator.phase.value = tabObj.phase.value;
