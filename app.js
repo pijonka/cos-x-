@@ -79,7 +79,11 @@ class tabObj {
     initListeners() {
         this.activeButton.addEventListener('click', () => {
             this.active = !this.active;
-            // wave function call
+            if(this.active) {
+                activateWave()
+            } else {
+                // killWave();
+            }
         })
 
         // SECTION update the formula whenever input is given
@@ -189,37 +193,33 @@ class tabObj {
     }
 
     activateWave() {
-        if(this.active) {
-            // checks whether there has already been a first oscillator that passed firstStartTime
-            if (firstStartTime === null) 
-                firstStartTime = audioContext.currentTime
+        // checks whether there has already been a first oscillator that passed firstStartTime
+        if (firstStartTime === null) 
+            firstStartTime = audioContext.currentTime
 
-            // conversion from phase in degrees to phase in seconds (take how much it fits INTO 360 degrees)
-            this.phaseCycles = (this.phase.value / 360);
-            
-            // distance between the starting point and the current time
-            this.elapsedTime = audioContext.currentTime - firstStartTime;
+        // conversion from phase in degrees to phase in seconds (take how much it fits INTO 360 degrees)
+        this.phaseCycles = (this.phase.value / 360);
+        
+        // distance between the starting point and the current time
+        this.elapsedTime = audioContext.currentTime - firstStartTime;
 
-            // the amount of cycles that the oscillator has endured (neutralize the elapsed time by multiplying with frequency so that, when it is an integer, it will be a continuous value that tells you how many cycles have passed (integer if it is ON a period))
-            this.elapsedCycles = this.freq.value * this.elapsedTime;
+        // the amount of cycles that the oscillator has endured (neutralize the elapsed time by multiplying with frequency so that, when it is an integer, it will be a continuous value that tells you how many cycles have passed (integer if it is ON a period))
+        this.elapsedCycles = this.freq.value * this.elapsedTime;
 
-            // the position that the wave should be on given its phase
-            this.pos = normalizeToRange(this.elapsedCycles - this.phaseCycles);
+        // the position that the wave should be on given its phase
+        this.pos = normalizeToRange(this.elapsedCycles - this.phaseCycles);
 
-            // the amount of cycles to wait before starting the sound wave (will always be a fractional value)
-            this.cyclesToWait = 1 - this.pos;
+        // the amount of cycles to wait before starting the sound wave (will always be a fractional value)
+        this.cyclesToWait = 1 - this.pos;
 
-            // the amount of seconds to wait (divide by frequency so that it converts from cycles to seconds)
-            this.waitSeconds = this.cyclesToWait / this.freq.value;
+        // the amount of seconds to wait (divide by frequency so that it converts from cycles to seconds)
+        this.waitSeconds = this.cyclesToWait / this.freq.value;
 
-            // start at the current time plus the calculated seconds to wait
-            this.startWhen = audioContext.currentTime + this.waitSeconds;
+        // start at the current time plus the calculated seconds to wait
+        this.startWhen = audioContext.currentTime + this.waitSeconds;
 
-            // pass start time
-            createWave(this.startWhen)
-        } else {
-            // killWave(tabObj);
-        }   
+        // pass start time
+        this.createWave(this.startWhen)
     }
 
     // define active button function?
