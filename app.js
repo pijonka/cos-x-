@@ -188,8 +188,39 @@ class tabObj {
         draw();
     }
 
-    
-    // define create wave function
+    activateWave() {
+        if(this.active) {
+            // checks whether there has already been a first oscillator that passed firstStartTime
+            if (firstStartTime === null) 
+                firstStartTime = audioContext.currentTime
+
+            // conversion from phase in degrees to phase in seconds (take how much it fits INTO 360 degrees)
+            this.phaseCycles = (this.phase.value / 360);
+            
+            // distance between the starting point and the current time
+            this.elapsedTime = audioContext.currentTime - firstStartTime;
+
+            // the amount of cycles that the oscillator has endured (neutralize the elapsed time by multiplying with frequency so that, when it is an integer, it will be a continuous value that tells you how many cycles have passed (integer if it is ON a period))
+            this.elapsedCycles = this.freq.value * this.elapsedTime;
+
+            // the position that the wave should be on given its phase
+            this.pos = normalizeToRange(this.elapsedCycles - this.phaseCycles);
+
+            // the amount of cycles to wait before starting the sound wave (will always be a fractional value)
+            this.cyclesToWait = 1 - this.pos;
+
+            // the amount of seconds to wait (divide by frequency so that it converts from cycles to seconds)
+            this.waitSeconds = this.cyclesToWait / this.freq.value;
+
+            // start at the current time plus the calculated seconds to wait
+            this.startWhen = audioContext.currentTime + this.waitSeconds;
+
+            // pass start time
+            createWave(this.startWhen)
+        } else {
+            // killWave(tabObj);
+        }   
+    }
 
     // define active button function?
 
