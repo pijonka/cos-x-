@@ -101,6 +101,86 @@ class tabObj {
         }
     }
 
+    createWave(when) {
+
+        // resets oscillator associated with this instance
+        if(this.oscillator) {
+            this.oscillator.stop();
+            this.oscillator.disconnect();
+        }
+        // resets gain node associated with this instance
+        if (this.gainNode) {
+            this.gainNode.disconnect();
+        }
+        
+        // (NODE) Create the oscillator
+        this.oscillator = audioContext.createOscillator();
+        
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        
+        // Set the frequency for the oscillator
+        this.oscillator.frequency.value = this.freq.value;
+
+        // Set the amplitude for the oscillator
+        // (NODE)
+        this.gainNode = audioContext.createGain(); 
+        this.gainNode.gain.setValueAtTime(this.amp.value, audioContext.currentTime);
+        
+        // set the phase for the oscillator
+        // tabObj.oscillator.phase.value = tabObj.phase.value;
+
+        // connect the (NODE)s
+        this.oscillator.connect(this.gainNode);
+        this.gainNode.connect(analyser);
+        this.gainNode.connect(audioContext.destination);
+        // oscillator (input) --> gain --> analyser --> destination (output)
+        this.oscillator.start(when);
+        
+        // the button must now display "stop"
+        this.activeButton.textContent = this.activeButtonLabel;
+        
+        // And create the canvas
+        const canvas = document.getElementById('oscilloscope');
+        const canvasContext = canvas.getContext('2d');
+
+        function draw() {
+            requestAnimationFrame(draw);
+
+            analyser.getByteTimeDomainData(dataArray);
+
+            canvasContext.fillStyle = 'rgb(255, 255, 255)';
+            canvasContext.fillRect(0, 0, canvas.width, canvas.height)
+
+            canvasContext.lineWidth = 2;
+            canvasContext.strokeStyle = "rgb(0 0 0)";
+
+            canvasContext.beginPath();
+
+            const sliceWidth = (canvas.width * 1.0) / bufferLength;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = (v * canvas.height) / 2;
+
+                if (i === 0) {
+                    canvasContext.moveTo(x, y);
+                } else {
+                    canvasContext.lineTo(x, y);
+                }
+
+                x += sliceWidth;
+            }
+
+            canvasContext.lineTo(canvas.width, canvas.height / 2);
+            canvasContext.stroke();
+
+        }
+        
+        draw();
+    }
+
     
     // define create wave function
 
