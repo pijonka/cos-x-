@@ -79,8 +79,8 @@ class tabObj {
     initListeners() {
         this.activeButton.addEventListener('click', () => {
             this.active = !this.active;
-            if(this.active) {
-                activateWave()
+            if(!this.active) {
+                this.createWaveAtStart()
             } else {
                 // killWave();
             }
@@ -191,8 +191,9 @@ class tabObj {
         
         draw();
     }
-
-    activateWave() {
+    
+    // creates the wave at firstStartTime
+    createWaveAtStart() {
         // checks whether there has already been a first oscillator that passed firstStartTime
         if (firstStartTime === null) 
             firstStartTime = audioContext.currentTime
@@ -221,6 +222,8 @@ class tabObj {
         // pass start time
         this.createWave(this.startWhen)
     }
+
+    
 
     // define active button function?
 
