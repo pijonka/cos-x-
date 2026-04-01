@@ -219,7 +219,7 @@ class tabObj {
         this.cyclesToWait = 1 - this.pos;
 
         // the amount of seconds to wait (divide by frequency so that it converts from cycles to seconds)
-        this.waitSeconds = this.cyclesToWait / this.freq.value;
+        this.waitSeconds = this.cyclesToWait / this.freq;
 
         // start at the current time plus the calculated seconds to wait
         this.startWhen = audioContext.currentTime + this.waitSeconds;
