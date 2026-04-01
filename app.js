@@ -56,6 +56,11 @@ class tabObj {
         this.activeButton = this.htmlBody.querySelector('.activeButton');
         this.formulaDisplay = this.htmlBody.querySelector('.f');
 
+        // define other object variables 
+        this.activeButtonLabel = 'stop';
+        this.inactiveButtonLabel = 'start';
+        this.active = false;
+
         // set up listeners
         this.initListeners();
 
@@ -63,13 +68,9 @@ class tabObj {
         // call f(x) function
         this.f()
 
-        this.activeButtonLabel = 'stop';
-        this.inactiveButtonLabel = 'start';
-
         // create and kill the wave
         this.createWave(audioContext.currentTime);
-        // this.killWave();
-
+        this.killWave();
     }
 
     get freq() { return Number(this.freqInit.value); }
@@ -79,10 +80,10 @@ class tabObj {
     initListeners() {
         this.activeButton.addEventListener('click', () => {
             this.active = !this.active;
-            if(!this.active) {
+            if (this.active) {
                 this.createWaveAtStart()
             } else {
-                // killWave();
+                this.killWave()
             }
         })
 
@@ -107,15 +108,16 @@ class tabObj {
         this.formulaDisplay.innerHTML = `\\(${latex}\\)`
 
         // latex equation
-        if(window.MathJax) {
-                MathJax.typesetPromise([this.formulaDisplay]).catch((err) => console.log(err.message));
+        if (window.MathJax) {
+            MathJax.typesetPromise([this.formulaDisplay]).catch((err) => console.log(err.message));
         }
     }
 
+    // create wave at passed parameter
     createWave(when) {
 
         // resets oscillator associated with this instance
-        if(this.oscillator) {
+        if (this.oscillator) {
             this.oscillator.stop();
             this.oscillator.disconnect();
         }
@@ -123,21 +125,21 @@ class tabObj {
         if (this.gainNode) {
             this.gainNode.disconnect();
         }
-        
+
         // (NODE) Create the oscillator
         this.oscillator = audioContext.createOscillator();
-        
+
         const bufferLength = analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
-        
+
         // Set the frequency for the oscillator
         this.oscillator.frequency.value = this.freq;
 
         // Set the amplitude for the oscillator
         // (NODE)
-        this.gainNode = audioContext.createGain(); 
+        this.gainNode = audioContext.createGain();
         this.gainNode.gain.setValueAtTime(this.amp, audioContext.currentTime);
-        
+
         // set the phase for the oscillator
         // tabObj.oscillator.phase.value = tabObj.phase.value;
 
@@ -147,10 +149,10 @@ class tabObj {
         this.gainNode.connect(audioContext.destination);
         // oscillator (input) --> gain --> analyser --> destination (output)
         this.oscillator.start(when);
-        
+
         // the button must now display "stop"
         this.activeButton.textContent = this.activeButtonLabel;
-        
+
         // And create the canvas
         const canvas = document.getElementById('oscilloscope');
         const canvasContext = canvas.getContext('2d');
@@ -188,19 +190,19 @@ class tabObj {
             canvasContext.stroke();
 
         }
-        
+
         draw();
     }
-    
+
     // creates the wave at firstStartTime
     createWaveAtStart() {
         // checks whether there has already been a first oscillator that passed firstStartTime
-        if (firstStartTime === null) 
+        if (firstStartTime === null)
             firstStartTime = audioContext.currentTime
 
         // conversion from phase in degrees to phase in seconds (take how much it fits INTO 360 degrees)
         this.phaseCycles = (this.phase.value / 360);
-        
+
         // distance between the starting point and the current time
         this.elapsedTime = audioContext.currentTime - firstStartTime;
 
@@ -223,7 +225,19 @@ class tabObj {
         this.createWave(this.startWhen)
     }
 
-    
+    killWave() {
+        if (this.oscillator) {
+            this.oscillator.stop();
+            this.oscillator.disconnect();
+        }
+        if (this.gainNode) {
+            this.gainNode.disconnect();
+        }
+
+        this.activeButton.textContent = this.inactiveButtonLabel;
+    }
+
+
 
     // define active button function?
 
