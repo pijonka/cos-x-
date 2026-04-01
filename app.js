@@ -102,10 +102,18 @@ class tabObj {
         // SECTION update the formula whenever input is given
         this.freqInit.addEventListener('input', () => {
             this.f();
+            // also update the frequency value of the running oscillator if it's running
+            if (this.active) {
+                this.oscillator.frequency.value = this.freq;
+            }
         });
 
         this.ampInit.addEventListener('input', () => {
             this.f();
+            // also update the amp value of the running oscillator if it's running
+            if (this.active) {
+                this.gainNode.gain.setValueAtTime(this.amp, audioContext.currentTime);
+            }
         });
 
         this.phaseInit.addEventListener('input', () => {
