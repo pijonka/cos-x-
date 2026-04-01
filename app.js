@@ -278,7 +278,15 @@ class tabObj {
         this.activeButton.textContent = this.inactiveButtonLabel;
     }
 
+    // show this instance's html body
+    showBody() {
+        this.htmlBody.style.display = 'block';
+    }
 
+    // hide this instance's html body
+    hideBody() {
+        this.htmlBody.style.display = 'none';
+    }
 
     // define active button function?
 
