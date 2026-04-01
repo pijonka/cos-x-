@@ -24,8 +24,8 @@ const tabArray = [];
 // switch through tab states using the tabBar
 const tabBar = document.getElementById('tabBar');
 
-// (one-based) tab that will be open
-let activeTab = 1;
+// (zero-based) tab that will be open
+let activeTab = 0;
 
 class tabObj {
     constructor() { // the method that runs everytime a new instance is initialized
@@ -80,6 +80,9 @@ class tabObj {
         // create and kill the wave
         this.createWave(0);
         this.killWave();
+
+        // assign new tab as active tab
+        activeTab = tabArray.length;
     }
 
     get freq() { return Number(this.freqInit.value); }
