@@ -69,7 +69,7 @@ class tabObj {
         this.f()
 
         // create and kill the wave
-        this.createWave(audioContext.currentTime);
+        this.createWave(0);
         this.killWave();
     }
 
