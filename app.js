@@ -79,6 +79,7 @@ class tabObj {
 
     initListeners() {
         this.activeButton.addEventListener('click', async () => {
+            // wait until the audio context is ready to play
             if (audioContext.state === 'suspended')
                 await audioContext.resume();
             this.active = !this.active;
