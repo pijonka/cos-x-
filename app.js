@@ -29,6 +29,8 @@ let activeTab = 1;
 
 class tabObj {
     constructor() { // the method that runs everytime a new instance is initialized
+        // define a name for every instance
+        this.name = `Oscillator ${tabArray.length + 1}`
         // define main html element
         this.htmlBody = document.createElement('div')
         this.htmlBody.innerHTML = `
@@ -49,6 +51,13 @@ class tabObj {
 
                 <button class="activeButton">Start</button>
         `;
+
+        // define the tab handle html
+        this.tabHandle = document.createElement('div');
+        this.tabHandle.innerHTML = `
+ <a class="tabActiveButton">${this.name}</a><button class="tabCloseButton">X</button>
+        `;
+
         // grab references
         this.freqInit = this.htmlBody.querySelector('.freq');
         this.ampInit = this.htmlBody.querySelector('.amp');
