@@ -78,7 +78,9 @@ class tabObj {
     get phase() { return Number(this.phaseInit.value); }
 
     initListeners() {
-        this.activeButton.addEventListener('click', () => {
+        this.activeButton.addEventListener('click', async () => {
+            if (audioContext.state === 'suspended')
+                await audioContext.resume();
             this.active = !this.active;
             if (this.active) {
                 this.createWaveAtStart()
