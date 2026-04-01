@@ -59,11 +59,15 @@ class tabObj {
         `;
 
         // grab references
+        /// of the body
         this.freqInit = this.htmlBody.querySelector('.freq');
         this.ampInit = this.htmlBody.querySelector('.amp');
         this.phaseInit = this.htmlBody.querySelector('.phase');
         this.activeButton = this.htmlBody.querySelector('.activeButton');
         this.formulaDisplay = this.htmlBody.querySelector('.f');
+        /// and the tab handle
+        this.tabActiveButton = this.tabHandle.querySelector('.tabActiveButton');
+        this.tabCloseButton = this.tabHandle.querySelector('.tabCloseButton');
 
         // define other object variables 
         this.activeButtonLabel = 'stop';
@@ -90,6 +94,7 @@ class tabObj {
     get phase() { return Number(this.phaseInit.value); }
 
     initListeners() {
+        // manage the state of the tab
         this.activeButton.addEventListener('click', async () => {
             // wait until the audio context is ready to play
             if (audioContext.state === 'suspended')
@@ -102,7 +107,7 @@ class tabObj {
             }
         })
 
-        // SECTION update the formula whenever input is given
+        // SECTION html body schedulers
         this.freqInit.addEventListener('input', () => {
             this.f();
             // also update the frequency value of the running oscillator if it's running
@@ -122,6 +127,19 @@ class tabObj {
         this.phaseInit.addEventListener('input', () => {
             this.f();
         });
+
+        // END SECTION
+
+        // SECTION active button and close button schedulers
+        this.tabActiveButton.addEventListener('click', () => {
+            activeTab = tabArray.length
+            isolateActiveTab();
+        })
+
+        this.tabCloseButton.addEventListener('click', () => {
+            // destroy()
+        })
+
 
     }
 
