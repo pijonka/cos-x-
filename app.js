@@ -28,7 +28,7 @@ const tabBar = document.getElementById('tabBar');
 let activeTab = 0;
 
 class tabObj {
-    constructor() { // the method that runs everytime a new instance is initialized
+    constructor(id) { // the method that runs everytime a new instance is initialized
         // define a name for every instance
         this.name = `Oscillator ${tabArray.length + 1}`
         // define main html element
@@ -295,6 +295,11 @@ class tabObj {
     // define activate wave function
 }
 
+// define the TabManager class
+// constructor contains
+/// all the tabs (like tabArray used to)
+/// the activeTab
+/// setActiveTab(id)
 function makeNewTab() {
     const newTab = new tabObj
     tabArray.push(newTab);
