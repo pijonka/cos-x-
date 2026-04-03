@@ -14,7 +14,6 @@ let firstStartTime = null;
 const analyser = audioContext.createAnalyser();
 analyser.fftSize = 2048;
 
-
 // all the tabs
 const tabsContainer = document.getElementById('tabs');
 
@@ -27,7 +26,13 @@ const tabBar = document.getElementById('tabBar');
 // (zero-based) tab that will be open
 let activeTab = 0;
 
-class tabObj {
+// define the TabManager class
+// constructor contains
+/// all the tabs (like tabArray used to)
+/// the activeTab
+/// setActiveTab(id)
+
+class TabObj {
     constructor(id) { // the method that runs everytime a new instance is initialized
         // define a name for every instance
         this.name = `Oscillator ${tabArray.length + 1}`
@@ -295,13 +300,8 @@ class tabObj {
     // define activate wave function
 }
 
-// define the TabManager class
-// constructor contains
-/// all the tabs (like tabArray used to)
-/// the activeTab
-/// setActiveTab(id)
 function makeNewTab() {
-    const newTab = new tabObj
+    const newTab = new TabObj
     tabArray.push(newTab);
     tabsContainer.appendChild(newTab.htmlBody);
 }
