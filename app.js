@@ -14,28 +14,44 @@ let firstStartTime = null;
 const analyser = audioContext.createAnalyser();
 analyser.fftSize = 2048;
 
-// all the tabs
-const tabsContainer = document.getElementById('tabs');
-
-// array which carries the data for all the tabs 
-const tabArray = [];
-
-// switch through tab states using the tabBar
-const tabBar = document.getElementById('tabBar');
-
-// (zero-based) tab that will be open
-let activeTab = 0;
-
 // define the TabManager class
-// constructor contains
-/// all the tabs (like tabArray used to)
-/// the activeTab
-/// setActiveTab(id)
+class TabManager {
+    // constructor contains
+    constructor() {
+        // object that carries every tab
+        this.tabs = {};
+        // how many tabs there are
+        this.counter = 0;
+        // controls which tab will be visible at any time
+        this.activeTabId = null;
+        // the html element to append the tabs object into
+        this.tabsContainer = document.getElementById('tabs');
+        // the html element to append the tab bars into
+        this.tabBar = document.getElementById('tabBar');
+    }
+
+    // creates new tab instances
+    addTab() {
+        // the id that the tab instance will get (the length of this.tabs)§ 
+        this.tabId = this.counter++
+        // initialize a new instance of tab object
+        this.tabs[this.tabId] = new TabObj(this.tabId)
+        // append the html of the tab object
+        this.tabsContainer.appendChild(this.tabs[this.tabId].htmlBody);
+        // append the html of the tab handle
+        this.tabBar.appendChild(this.tabs[this.tabId].tabHandle)
+        // TODO assign new tab as active tab
+    }
+
+    setActiveTab(id) {
+    }
+}
 
 class TabObj {
     constructor(id) { // the method that runs everytime a new instance is initialized
+        this.id = id;
         // define a name for every instance
-        this.name = `Oscillator ${tabArray.length + 1}`
+        this.name = `Oscillator ${this.id}`
         // define main html element
         this.htmlBody = document.createElement('div')
         this.htmlBody.innerHTML = `
@@ -90,8 +106,6 @@ class TabObj {
         this.createWave(0);
         this.killWave();
 
-        // assign new tab as active tab
-        activeTab = tabArray.length;
     }
 
     get freq() { return Number(this.freqInit.value); }
@@ -137,8 +151,7 @@ class TabObj {
 
         // SECTION active button and close button schedulers
         this.tabActiveButton.addEventListener('click', () => {
-            activeTab = tabArray.length
-            isolateActiveTab();
+            // set active tab (this.id)
         })
 
         this.tabCloseButton.addEventListener('click', () => {
@@ -283,16 +296,6 @@ class TabObj {
         this.activeButton.textContent = this.inactiveButtonLabel;
     }
 
-    // show this instance's html body
-    showBody() {
-        this.htmlBody.style.display = 'block';
-    }
-
-    // hide this instance's html body
-    hideBody() {
-        this.htmlBody.style.display = 'none';
-    }
-
     // define active button function?
 
     // define tab handle function
@@ -300,21 +303,27 @@ class TabObj {
     // define activate wave function
 }
 
-function makeNewTab() {
-    const newTab = new TabObj
-    tabArray.push(newTab);
-    tabsContainer.appendChild(newTab.htmlBody);
-}
-makeNewTab();
+// function makeNewTab() {
+//     const newTab = new TabObj
+//     tabArray.push(newTab);
+//     tabsContainer.appendChild(newTab.htmlBody);
+// }
+// makeNewTab();
 // isolateActiveTab();
 
-// get the new tab button
+// initialize a global tab manager
+let globalTabManager = new TabManager();
+
+// create at least one new tab
+globalTabManager.addTab();
+
+
 const newTabButton = document.getElementById('newTabButton');
 
 // if user wants new tab
 newTabButton.addEventListener('click', () => {
     // give them a new tab
-    makeNewTab();
-    isolateActiveTab();
+    // makeNewTab();
+    // isolateActiveTab();
 
 })
