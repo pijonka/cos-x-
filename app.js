@@ -45,15 +45,21 @@ class TabManager {
         // assign new tab as active tab
         this.setActiveTab(this.tabId)
     }
+
     // sets the passed tab as the active one by hiding the old active tab (if there was one) and displaying the new one
     setActiveTab(id) {
         // if there was an old active tab
-        if (this.activeTabId != null)
+        if (this.activeTabId != null) {
             // hide the old active tab
             this.tabs[this.activeTabId].htmlBody.style.display = 'none';
-        // in either case, display the html body and
+            // and remove the tab handle active tab class in css
+            this.tabs[this.activeTabId].tabHandle.querySelector('.tabActiveButton').classList.remove('activeTab');
+        }
+        // in either case, display the html body of the new active tab,
         this.tabs[id].htmlBody.style.display = 'block';
-        // set the new active tab
+        // add the active tab class to the tab handle,
+        this.tabs[id].tabHandle.querySelector('.tabActiveButton').classList.add('activeTab');
+        // and set the new active tab
         this.activeTabId = id;
     }
 }
