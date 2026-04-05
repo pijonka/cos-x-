@@ -16,12 +16,14 @@ analyser.fftSize = 2048;
 
 // define the TabManager class
 class TabManager {
+
+    // how many tabs there are
+    counter = 0;
+
     // constructor contains
     constructor() {
         // object that carries every tab
         this.tabs = {};
-        // how many tabs there are
-        this.counter = 0;
         // controls which tab will be visible at any time
         this.activeTabId = null;
         // the html element to append the tabs object into
@@ -33,14 +35,15 @@ class TabManager {
     // creates new tab instances
     addTab() {
         // the id that the tab instance will get (the length of this.tabs)§ 
-        this.tabId = this.counter++
+        this.tabId = this.counter + 1
         // initialize a new instance of tab object
         this.tabs[this.tabId] = new TabObj(this.tabId)
         // append the html of the tab object
         this.tabsContainer.appendChild(this.tabs[this.tabId].htmlBody);
         // append the html of the tab handle
         this.tabBar.appendChild(this.tabs[this.tabId].tabHandle)
-        // TODO assign new tab as active tab
+        // assign new tab as active tab
+        this.setActiveTab(this.tabId)
     }
 
     setActiveTab(id) {
