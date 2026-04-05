@@ -17,8 +17,6 @@ analyser.fftSize = 2048;
 // define the TabManager class
 class TabManager {
 
-    // how many tabs there are
-    counter = 0;
 
     // constructor contains
     constructor() {
@@ -30,12 +28,15 @@ class TabManager {
         this.tabsContainer = document.getElementById('tabs');
         // the html element to append the tab bars into
         this.tabBar = document.getElementById('tabBar');
+        // tab counter
+        this.counter = 0;
     }
 
     // creates new tab instances
     addTab() {
-        // the id that the tab instance will get (the length of this.tabs)§ 
-        this.tabId = this.counter + 1
+        this.counter++;
+        // the id that the tab instance will get
+        this.tabId = this.counter;
         // initialize a new instance of tab object
         this.tabs[this.tabId] = new TabObj(this.tabId)
         // append the html of the tab object
@@ -47,6 +48,7 @@ class TabManager {
     }
 
     setActiveTab(id) {
+        this.tabs[id].htmlBody.style.display = "block";
     }
 }
 
@@ -315,18 +317,15 @@ class TabObj {
 // isolateActiveTab();
 
 // initialize a global tab manager
-let globalTabManager = new TabManager();
+let tabManager = new TabManager();
 
 // create at least one new tab
-globalTabManager.addTab();
+tabManager.addTab();
 
 
 const newTabButton = document.getElementById('newTabButton');
 
 // if user wants new tab
 newTabButton.addEventListener('click', () => {
-    // give them a new tab
-    // makeNewTab();
-    // isolateActiveTab();
-
+    tabManager.addTab();
 })
