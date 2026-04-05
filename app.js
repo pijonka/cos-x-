@@ -46,9 +46,16 @@ class TabManager {
         // assign new tab as active tab
         this.setActiveTab(this.tabId)
     }
-
+    // sets the passed tab as the active one by hiding the old active tab (if there was one) and displaying the new one
     setActiveTab(id) {
-        this.tabs[id].htmlBody.style.display = "block";
+        // if there was an old active tab
+        if (this.activeTabId != null)
+            // hide the old active tab
+            this.tabs[this.activeTabId].htmlBody.style.display = 'none';
+        // in either case, display the html body and
+        this.tabs[id].htmlBody.style.display = 'block';
+        // set the new active tab
+        this.activeTabId = id;
     }
 }
 
