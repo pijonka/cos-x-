@@ -17,7 +17,6 @@ analyser.fftSize = 2048;
 // define the TabManager class
 class TabManager {
 
-
     // constructor contains
     constructor() {
         // object that carries every tab
@@ -163,7 +162,7 @@ class TabObj {
 
         // SECTION active button and close button schedulers
         this.tabActiveButton.addEventListener('click', () => {
-            // set active tab (this.id)
+            tabManager.setActiveTab(this.id);
         })
 
         this.tabCloseButton.addEventListener('click', () => {
