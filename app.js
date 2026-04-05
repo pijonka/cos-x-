@@ -20,11 +20,9 @@ class TabManager {
     // constructor contains
     constructor() {
         // object that carries every tab
-        this.tabs = {};
-        // controls which tab will be visible at any time
+        this.tabs = [];
+        // value that is used to controls which tab will be visible at any time
         this.activeTabId = null;
-        // previous active tab
-        this.prevActiveTabId = null;
         // the html element to append the tabs object into
         this.tabsContainer = document.getElementById('tabs');
         // the html element to append the tab bars into
@@ -67,20 +65,16 @@ class TabManager {
 
     // remove an existing tab
     removeTab(id) {
-        // if this tab even exists
-        if (this.tabs[id]) {
-
-            // if it's the active tab being deleted
-            if (this.tabs[id] === this.activeTabId) {
-            }
-
-            // remove html elements
-            this.tabs[id].htmlBody.remove();
-            this.tabs[id].tabHandle.remove();
-
-            // destroy the instance
-            delete this.tabs[id]
+        // if it's the active tab being deleted
+        if (this.tabs[id] === this.activeTabId) {
         }
+
+        // remove html elements
+        this.tabs[id].htmlBody.remove();
+        this.tabs[id].tabHandle.remove();
+
+
+        delete this.tabs[id]
     }
 }
 
