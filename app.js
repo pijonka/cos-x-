@@ -77,8 +77,13 @@ class TabManager {
         const activeTabIndex = this.tabs.findIndex(element => element.id === this.activeTabId)
         // if it's the active tab being deleted
         if (toBeRemovedTabIndex === activeTabIndex) {
-            // set the active tab to the tab left of it
-            this.setActiveTab(this.tabs[activeTabIndex - 1].id)
+            // if there is a tab left to it
+            if (toBeRemovedTabIndex != 0)
+                // set the active tab to the tab left of it
+                this.setActiveTab(this.tabs[activeTabIndex - 1].id)
+            else // if there is no tab left to it
+                // set the active tab to the tab right of it
+                this.setActiveTab(this.tabs[activeTabIndex + 1].id);
         }
 
         // remove html elements
