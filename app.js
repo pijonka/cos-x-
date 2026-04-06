@@ -33,6 +33,8 @@ class TabManager {
 
     // creates new tab instances
     addTab() {
+        // check if this is the first tab ever being made
+        const firstTab = this.activeTabId == null
         // increment the counter of new tabs that have been generated
         this.counter++;
         // define the id that the tab instance will get
@@ -48,8 +50,11 @@ class TabManager {
         // set new tab to active tab
         this.setActiveTab(this.newTabId);
 
-        // if there are now two tabs
-        if (this.tabs.length === 2) {
+        // if this is the first tab
+        if (firstTab === true) {
+            // hide the tab close button
+            this.tabs[0].tabCloseButton.style.display = 'none';
+        } else if (this.tabs.length === 2) { // or, if there are now two tabs
             // give the lonely tab its close button back
             this.tabs[0].tabCloseButton.style.display = '';
         }
