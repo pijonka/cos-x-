@@ -86,7 +86,7 @@ class TabManager {
         this.tabs[toBeRemovedTabIndex].tabHandle.remove();
 
         // delete the tab
-        delete this.tabs[toBeRemovedTabIndex]
+        this.tabs.splice(toBeRemovedTabIndex, 1)
     }
 }
 
