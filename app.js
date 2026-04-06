@@ -47,6 +47,12 @@ class TabManager {
         this.tabs.push(this.newTab);
         // set new tab to active tab
         this.setActiveTab(this.newTabId);
+
+        // if there are now two tabs
+        if (this.tabs.length === 2) {
+            // give the lonely tab its close button back
+            this.tabs[0].tabCloseButton.style.display = '';
+        }
     }
 
     // sets the passed tab as the active one by hiding the old active tab (if there was one) and displaying the new one
@@ -92,6 +98,12 @@ class TabManager {
 
         // delete the tab
         this.tabs.splice(toBeRemovedTabIndex, 1)
+
+        // if there is now only one tab
+        if (this.tabs.length === 1) {
+            // hide the tab close button
+            this.tabs[0].tabCloseButton.style.display = 'none';
+        }
     }
 }
 
