@@ -33,32 +33,39 @@ class TabManager {
 
     // creates new tab instances
     addTab() {
+        // increment the counter of new tabs that have been generated
         this.counter++;
-        // the id that the tab instance will get
-        this.tabId = this.counter;
-        // initialize a new instance of tab object
-        this.tabs[this.tabId] = new TabObj(this.tabId)
+        // define the id that the tab instance will get
+        this.newTabId = this.counter;
+        // define a new instance of tab object
+        this.newTab = new TabObj(this.newTabId)
         // append the html of the tab object
-        this.tabsContainer.appendChild(this.tabs[this.tabId].htmlBody);
+        this.tabsContainer.appendChild(this.newTab.htmlBody);
         // append the html of the tab handle
-        this.tabBar.appendChild(this.tabs[this.tabId].tabHandle)
-        // assign new tab as active tab
-        this.setActiveTab(this.tabId)
+        this.tabBar.appendChild(this.newTab.tabHandle)
+        // push the new instance into the array
+        this.tabs.push(this.newTab);
+        // set new tab to active tab
+        this.setActiveTab(this.newTabId);
     }
 
     // sets the passed tab as the active one by hiding the old active tab (if there was one) and displaying the new one
     setActiveTab(id) {
+        // find the index of the currently active tab
+        const currentActiveTabIndex = this.tabs.findIndex(element => element.id === this.activeTabId)
+        // find the index of the to be active tab
+        const toBeActiveTabIndex = this.tabs.findIndex(element => element.id === id)
         // if there was an old active tab
-        if (this.activeTabId != null) {
+        if (currentActiveTabIndex != -1) {
             // hide the old active tab
-            this.tabs[this.activeTabId].htmlBody.style.display = 'none';
+            this.tabs[currentActiveTabIndex].htmlBody.style.display = 'none';
             // and remove the tab handle active tab class in css
-            this.tabs[this.activeTabId].tabHandle.querySelector('.tabActiveButton').classList.remove('activeTab');
+            this.tabs[currentActiveTabIndex].tabHandle.querySelector('.tabActiveButton').classList.remove('activeTab');
         }
         // in either case, display the html body of the new active tab,
-        this.tabs[id].htmlBody.style.display = 'block';
+        this.tabs[toBeActiveTabIndex].htmlBody.style.display = 'block';
         // add the active tab class to the tab handle,
-        this.tabs[id].tabHandle.querySelector('.tabActiveButton').classList.add('activeTab');
+        this.tabs[toBeActiveTabIndex].tabHandle.querySelector('.tabActiveButton').classList.add('activeTab');
         // and set the new active tab
         this.activeTabId = id;
     }
@@ -66,14 +73,16 @@ class TabManager {
     // remove an existing tab
     removeTab(id) {
         // if it's the active tab being deleted
-        if (this.tabs[id] === this.activeTabId) {
+        if (this.tabs[id].id === this.activeTabId) {
+            // set the active tab to the tab left of it
+            this.setActiveTab(id - 1)
         }
 
         // remove html elements
         this.tabs[id].htmlBody.remove();
         this.tabs[id].tabHandle.remove();
 
-
+        // delete the tab
         delete this.tabs[id]
     }
 }
