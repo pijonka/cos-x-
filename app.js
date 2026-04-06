@@ -51,9 +51,9 @@ class TabManager {
 
     // sets the passed tab as the active one by hiding the old active tab (if there was one) and displaying the new one
     setActiveTab(id) {
-        // find the index of the currently active tab
+        // find the index of the currently active tab using id
         const currentActiveTabIndex = this.tabs.findIndex(element => element.id === this.activeTabId)
-        // find the index of the to be active tab
+        // find the index of the to be active tab using id
         const toBeActiveTabIndex = this.tabs.findIndex(element => element.id === id)
         // if there was an old active tab
         if (currentActiveTabIndex != -1) {
@@ -72,18 +72,21 @@ class TabManager {
 
     // remove an existing tab
     removeTab(id) {
+        // find the index of the tab to be removed using id
+        const toBeRemovedTabIndex = this.tabs.findIndex(element => element.id === id)
+        const activeTabIndex = this.tabs.findIndex(element => element.id === this.activeTabId)
         // if it's the active tab being deleted
-        if (this.tabs[id].id === this.activeTabId) {
+        if (toBeRemovedTabIndex === activeTabIndex) {
             // set the active tab to the tab left of it
-            this.setActiveTab(id - 1)
+            this.setActiveTab(this.tabs[activeTabIndex - 1].id)
         }
 
         // remove html elements
-        this.tabs[id].htmlBody.remove();
-        this.tabs[id].tabHandle.remove();
+        this.tabs[toBeRemovedTabIndex].htmlBody.remove();
+        this.tabs[toBeRemovedTabIndex].tabHandle.remove();
 
         // delete the tab
-        delete this.tabs[id]
+        delete this.tabs[toBeRemovedTabIndex]
     }
 }
 
