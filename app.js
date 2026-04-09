@@ -14,47 +14,122 @@ let firstStartTime = null;
 const analyser = audioContext.createAnalyser();
 analyser.fftSize = 2048;
 
+// define the TabManager class
+class TabManager {
 
-// all the tabs
-const tabsContainer = document.getElementById('tabs');
+    // constructor contains
+    constructor() {
+        // object that carries every tab
+        this.tabs = [];
+        // value that is used to controls which tab will be visible at any time
+        this.activeTabId = null;
+        // the html element to append the tabs object into
+        this.tabsContainer = document.getElementById('tabs');
+        // the html element to append the tab bars into
+        this.tabBar = document.getElementById('tabBar');
+        // tab counter
+        this.counter = 0;
+    }
 
-// array which carries the data for all the tabs 
-const tabArray = [];
+    // creates new tab instances
+    addTab() {
+        // check if this is the first tab ever being made
+        const firstTab = (this.activeTabId == null)
+        // increment the counter of new tabs that have been generated
+        this.counter++;
+        // define the id that the tab instance will get
+        this.newTabId = this.counter;
+        // define a new instance of tab object
+        this.newTab = new TabObj(this.newTabId)
+        // append the html of the tab object
+        this.tabsContainer.appendChild(this.newTab.htmlBody);
+        // append the html of the tab handle
+        this.tabBar.appendChild(this.newTab.tabHandle)
+        // push the new instance into the array
+        this.tabs.push(this.newTab);
+        // set new tab to active tab
+        this.setActiveTab(this.newTabId);
 
-// switch through tab states using the tabBar
-const tabBar = document.getElementById('tabBar');
-
-// the tab that will be open
-let activeTab = 1;
-
-// function that makes the program display only the activeTab
-function isolateActiveTab() {
-    // for every element in tabArray
-    for(i = 0; i < tabArray.length; i++) {
-        if(i != (activeTab - 1)) { // if the element is not the active tab
-            tabArray[i].htmlElement.style.display = 'none'; // do not display
-            tabArray[i].tabHandle.querySelector('a').classList.remove('activeTab');
+        // if this is the first tab
+        if (firstTab === true) {
+            // hide the tab close button
+            this.tabs[0].tabCloseButton.style.display = 'none';
+        } else if (this.tabs.length === 2) { // or, if there are now two tabs
+            // give the lonely tab its close button back
+            this.tabs[0].tabCloseButton.style.display = '';
         }
-        else { // else 
-            tabArray[i].htmlElement.style.display = 'block'; // do
-            tabArray[i].tabHandle.querySelector('a').classList.add('activeTab');
+    }
+
+    // sets the passed tab as the active one by hiding the old active tab (if there was one) and displaying the new one
+    setActiveTab(id) {
+        // find the index of the currently active tab using id
+        const currentActiveTabIndex = this.tabs.findIndex(element => element.id === this.activeTabId)
+        // find the index of the to be active tab using id
+        const toBeActiveTabIndex = this.tabs.findIndex(element => element.id === id)
+        // if there was an old active tab
+        if (currentActiveTabIndex != -1) {
+            // hide the old active tab
+            this.tabs[currentActiveTabIndex].htmlBody.style.display = 'none';
+            // and remove the tab handle active tab class in css
+            this.tabs[currentActiveTabIndex].tabHandle.querySelector('.tabActiveButton').classList.remove('activeTab');
+        }
+        // in either case, display the html body of the new active tab,
+        this.tabs[toBeActiveTabIndex].htmlBody.style.display = 'block';
+        // add the active tab class to the tab handle,
+        this.tabs[toBeActiveTabIndex].tabHandle.querySelector('.tabActiveButton').classList.add('activeTab');
+        // and set the new active tab
+        this.activeTabId = id;
+    }
+
+    // remove an existing tab
+    removeTab(id) {
+        // find the index of the tab to be removed using id
+        const toBeRemovedTabIndex = this.tabs.findIndex(element => element.id === id)
+        const activeTabIndex = this.tabs.findIndex(element => element.id === this.activeTabId)
+        // if it's the active tab being deleted
+        if (toBeRemovedTabIndex === activeTabIndex) {
+            // if there is a tab left to it
+            if (toBeRemovedTabIndex != 0)
+                // set the active tab to the tab left of it
+                this.setActiveTab(this.tabs[activeTabIndex - 1].id)
+            else // if there is no tab left to it
+                // set the active tab to the tab right of it
+                this.setActiveTab(this.tabs[activeTabIndex + 1].id);
+        }
+
+        // remove html elements
+        this.tabs[toBeRemovedTabIndex].htmlBody.remove();
+        this.tabs[toBeRemovedTabIndex].tabHandle.remove();
+
+        // kill the wave
+        this.tabs[toBeRemovedTabIndex].killWave();
+
+        // delete the tab
+        this.tabs.splice(toBeRemovedTabIndex, 1)
+
+        // if there is now only one tab
+        if (this.tabs.length === 1) {
+            // hide the tab close button
+            this.tabs[0].tabCloseButton.style.display = 'none';
         }
     }
 }
 
-// creates one instance of a tab
-function makeTabObj() {
-
-    // create a new tab element with html
-    const newTab = document.createElement('div');
-    newTab.innerHTML = `
+class TabObj {
+    constructor(id) { // the method that runs everytime a new instance is initialized
+        this.id = id;
+        // define a name for every instance
+        this.name = `Oscillator ${this.id}`
+        // define main html element
+        this.htmlBody = document.createElement('div')
+        this.htmlBody.innerHTML = `
                 <p class="f">f(x) = </p>
                 <div class="control-container">
                     <label>Frequency (hz)/pitch: </label>
                     <input class="freq" type="number" value="440">
 
                     <label>Amplitude/volume: </label>
-                    <input class="amp" type="number" value="1">
+                    <input class="amp" type="number" value="0.1" step="0.1">
 
                     <label>Phase: </label>
                     <div class="input-wrapper">
@@ -64,102 +139,149 @@ function makeTabObj() {
                 </div>
 
                 <button class="activeButton">Start</button>
-    `;
+        `;
 
-    // retrieve html input
-    let freqInput = newTab.querySelector('.freq');
-    freqInput.addEventListener('input', () => {freqInput = newTab.querySelector('.freq');});
-    let ampInput = newTab.querySelector('.amp');
-    ampInput.addEventListener('input', () => {ampInput = newTab.querySelector('.amp');});
-    let phaseInput = newTab.querySelector('.phase');
-    phaseInput.addEventListener('input', () => {phaseInput = newTab.querySelector('.phase');});
+        // define the tab handle html
+        this.tabHandle = document.createElement('div');
+        this.tabHandle.innerHTML = `
+ <a class="tabActiveButton">${this.name}</a><button class="tabCloseButton">X</button>
+        `;
 
-    // the tab object which will be replicated for each instance
-    let tabObj = {
-        freq: freqInput,
-        amp: ampInput,
-        phase: phaseInput,
-        active: false,
-        activeButton: newTab.querySelector('.activeButton'),
-        htmlElement: newTab,
-        oscillator: null,
-        gainNode: null,
-        activeButtonLabel: 'stop',
-        inactiveButtonLabel: 'start',
-        tabHandle: document.createElement('div'),
-        number: (tabArray.length + 1) 
+        // grab references
+        /// of the body
+        this.freqInit = this.htmlBody.querySelector('.freq');
+        this.ampInit = this.htmlBody.querySelector('.amp');
+        this.phaseInit = this.htmlBody.querySelector('.phase');
+        this.activeButton = this.htmlBody.querySelector('.activeButton');
+        this.formulaDisplay = this.htmlBody.querySelector('.f');
+        /// and the tab handle
+        this.tabActiveButton = this.tabHandle.querySelector('.tabActiveButton');
+        this.tabCloseButton = this.tabHandle.querySelector('.tabCloseButton');
+
+        // define other object variables 
+        this.activeButtonLabel = 'stop';
+        this.inactiveButtonLabel = 'start';
+        this.active = false;
+
+        // set up listeners
+        this.initListeners();
+
+
+        // call f(x) function
+        this.f()
+
+        // create and kill the wave
+        this.createWave(0);
+        this.killWave();
+
     }
-    
-    // f(x) implementation
-    // (having this be a function, especially with a parameter, is absolutely redunant, but looks cool)
-    function f(x) {
-        let formula = newTab.querySelector('.f');
-        function updateFormula() {
-            const latex = `f(x) = ${tabObj.amp.value} \\sin(2\\pi \\cdot ${tabObj.freq.value}(x - ${tabObj.phase.value}^\\circ))`
-            formula.innerHTML = `\\(${latex}\\)`;
 
-            if(window.MathJax) {
-                MathJax.typesetPromise([formula]).catch((err) => console.log(err.message));
+    get freq() { return Number(this.freqInit.value); }
+    get amp() { return Number(this.ampInit.value); }
+    get phase() { return Number(this.phaseInit.value); }
+
+    initListeners() {
+        // manage the state of the tab
+        this.activeButton.addEventListener('click', async () => {
+            // wait until the audio context is ready to play
+            if (audioContext.state === 'suspended')
+                await audioContext.resume();
+            this.active = !this.active;
+            if (this.active) {
+                this.createWaveAtStart()
+            } else {
+                this.killWave()
             }
-        }
-        // build formula once to initialize
-        updateFormula();
-
-        // then build again consequence of input
-        freqInput.addEventListener('input', () => {
-            updateFormula()
         })
-        ampInput.addEventListener('input', () => {
-            updateFormula();
-        });
-        phaseInput.addEventListener('input', () => {
-            updateFormula();
+
+        // SECTION html body schedulers
+        this.freqInit.addEventListener('input', () => {
+            this.f();
+            // also update the frequency value of the running oscillator if it's running
+            if (this.active) {
+                this.oscillator.frequency.value = this.freq;
+            }
         });
 
-        return x;
+        this.ampInit.addEventListener('input', () => {
+            this.f();
+            // also update the amp value of the running oscillator if it's running
+            if (this.active) {
+                this.gainNode.gain.setValueAtTime(this.amp, audioContext.currentTime);
+            }
+        });
+
+        this.phaseInit.addEventListener('input', () => {
+            this.f();
+        });
+
+        // END SECTION
+
+        // SECTION active button and close button schedulers
+        this.tabActiveButton.addEventListener('click', () => {
+            // set tab manager's active tab to this one
+            tabManager.setActiveTab(this.id);
+        })
+
+        this.tabCloseButton.addEventListener('click', () => {
+            // remove this tab using the tab manager
+            tabManager.removeTab(this.id);
+        })
+
+
     }
-    f(0);
 
-    // creates an oscillator that outputs a specified sound wave and draws it out as a sine wave
-    function createWave(when) {
+    // update formula function
+    f(x) {
+        const latex = `f(x) = ${this.amp} \\sin(2\\pi \\cdot ${this.freq}(x - ${this.phase}^\\circ))`;
+        this.formulaDisplay.innerHTML = `\\(${latex}\\)`
+
+        // latex equation
+        if (window.MathJax) {
+            MathJax.typesetPromise([this.formulaDisplay]).catch((err) => console.log(err.message));
+        }
+    }
+
+    // create wave at passed parameter
+    createWave(when) {
 
         // resets oscillator associated with this instance
-        if(tabObj.oscillator) {
-            tabObj.oscillator.stop();
-            tabObj.oscillator.disconnect();
+        if (this.oscillator) {
+            this.oscillator.stop();
+            this.oscillator.disconnect();
         }
         // resets gain node associated with this instance
-        if (tabObj.gainNode) {
-            tabObj.gainNode.disconnect();
+        if (this.gainNode) {
+            this.gainNode.disconnect();
         }
-        
+
         // (NODE) Create the oscillator
-        tabObj.oscillator = audioContext.createOscillator();
-        
+        this.oscillator = audioContext.createOscillator();
+
         const bufferLength = analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
-        
+
         // Set the frequency for the oscillator
-        tabObj.oscillator.frequency.value = tabObj.freq.value;
+        this.oscillator.frequency.value = this.freq;
 
         // Set the amplitude for the oscillator
         // (NODE)
-        tabObj.gainNode = audioContext.createGain(); 
-        tabObj.gainNode.gain.setValueAtTime(tabObj.amp.value, audioContext.currentTime);
-        
+        this.gainNode = audioContext.createGain();
+        this.gainNode.gain.setValueAtTime(this.amp, audioContext.currentTime);
+
         // set the phase for the oscillator
         // tabObj.oscillator.phase.value = tabObj.phase.value;
 
         // connect the (NODE)s
-        tabObj.oscillator.connect(tabObj.gainNode);
-        tabObj.gainNode.connect(analyser);
-        tabObj.gainNode.connect(audioContext.destination);
+        this.oscillator.connect(this.gainNode);
+        this.gainNode.connect(analyser);
+        this.gainNode.connect(audioContext.destination);
         // oscillator (input) --> gain --> analyser --> destination (output)
-        tabObj.oscillator.start(when);
-        
+        this.oscillator.start(when);
+
         // the button must now display "stop"
-        tabObj.activeButton.textContent = tabObj.activeButtonLabel;
-        
+        this.activeButton.textContent = this.activeButtonLabel;
+
         // And create the canvas
         const canvas = document.getElementById('oscilloscope');
         const canvasContext = canvas.getContext('2d');
@@ -197,104 +319,78 @@ function makeTabObj() {
             canvasContext.stroke();
 
         }
-        
+
         draw();
-        
     }
 
-    function killWave() {
-        if (tabObj.oscillator){
-            tabObj.oscillator.stop();
-            tabObj.oscillator.disconnect();
-        }
-        if(tabObj.gainNode) {
-            tabObj.gainNode.disconnect();
-        }
+    // creates the wave at firstStartTime
+    createWaveAtStart() {
+        // checks whether there has already been a first oscillator that passed firstStartTime
+        if (!firstStartTime)
+            firstStartTime = audioContext.currentTime
 
-        tabObj.activeButton.textContent = tabObj.inactiveButtonLabel;
+        // conversion from phase in degrees to phase in seconds (take how much it fits INTO 360 degrees)
+        this.phaseCycles = (this.phase / 360);
 
+        // distance between the starting point and the current time
+        this.elapsedTime = audioContext.currentTime - firstStartTime;
+
+        // the amount of cycles that the oscillator has endured (neutralize the elapsed time by multiplying with frequency so that, when it is an integer, it will be a continuous value that tells you how many cycles have passed (integer if it is ON a period))
+        this.elapsedCycles = this.freq * this.elapsedTime;
+
+        // the position that the wave should be on given its phase
+        this.pos = normalizeToRange(this.elapsedCycles - this.phaseCycles);
+
+        // the amount of cycles to wait before starting the sound wave (will always be a fractional value)
+        this.cyclesToWait = 1 - this.pos;
+
+        // the amount of seconds to wait (divide by frequency so that it converts from cycles to seconds)
+        this.waitSeconds = this.cyclesToWait / this.freq;
+
+        // start at the current time plus the calculated seconds to wait
+        this.startWhen = audioContext.currentTime + this.waitSeconds;
+
+        // pass start time
+        this.createWave(this.startWhen)
     }
 
-    // function calling
-    createWave();
-    killWave();
-
-
-
-
-    // activity condition
-    tabObj.activeButton.addEventListener('click', () => {
-        tabObj.active = !tabObj.active;
-        activateWave();
-    });
-
-    function activateWave() {
-            if(tabObj.active) {
-            // checks whether there has already been a first oscillator that passed firstStartTime
-            if (firstStartTime === null) 
-                firstStartTime = audioContext.currentTime
-
-            // conversion from phase in degrees to phase in seconds (take how much it fits INTO 360 degrees)
-            tabObj.phaseCycles = (tabObj.phase.value / 360);
-            
-            // distance between the starting point and the current time
-            tabObj.elapsedTime = audioContext.currentTime - firstStartTime;
-
-            // the amount of cycles that the oscillator has endured (neutralize the elapsed time by multiplying with frequency so that, when it is an integer, it will be a continuous value that tells you how many cycles have passed (integer if it is ON a period))
-            tabObj.elapsedCycles = tabObj.freq.value * tabObj.elapsedTime;
-
-            // the position that the wave should be on given its phase
-            tabObj.pos = normalizeToRange(tabObj.elapsedCycles - tabObj.phaseCycles);
-
-            // the amount of cycles to wait before starting the sound wave (will always be a fractional value)
-            tabObj.cyclesToWait = 1 - tabObj.pos;
-
-            // the amount of seconds to wait (divide by frequency so that it converts from cycles to seconds)
-            tabObj.waitSeconds = tabObj.cyclesToWait / tabObj.freq.value;
-
-            // start at the current time plus the calculated seconds to wait
-            tabObj.startWhen = audioContext.currentTime + tabObj.waitSeconds;
-
-            // pass start time
-            createWave(tabObj.startWhen)
-        } else {
-            killWave();
+    killWave() {
+        if (this.oscillator) {
+            this.oscillator.stop();
+            this.oscillator.disconnect();
         }
+        if (this.gainNode) {
+            this.gainNode.disconnect();
+        }
+
+        this.activeButton.textContent = this.inactiveButtonLabel;
     }
 
-    // define a tab handle
-    tabObj.tabHandle.innerHTML = `
-        <a class="tabActiveButton">Oscillator ${tabObj.number}</a>
-    `;
-    tabBar.appendChild(tabObj.tabHandle);
-    
-    activeTab = tabObj.number;
-    
-    tabObj.tabActiveButton = tabObj.tabHandle.querySelector('.tabActiveButton');
-    tabObj.tabActiveButton.addEventListener('click', () => {
-        activeTab = tabObj.number;
-        isolateActiveTab();
-        
-    })
-    
-    return tabObj;
+    // define active button function?
+
+    // define tab handle function
+
+    // define activate wave function
 }
 
-function makeNewTab() {
-    const newTab = makeTabObj();
-    tabArray.push(newTab);
-    tabsContainer.appendChild(newTab.htmlElement);
-}
-makeNewTab();
-isolateActiveTab();
+// function makeNewTab() {
+//     const newTab = new TabObj
+//     tabArray.push(newTab);
+//     tabsContainer.appendChild(newTab.htmlBody);
+// }
+// makeNewTab();
+// isolateActiveTab();
 
-// get the new tab button
+// initialize a global tab manager
+let tabManager = new TabManager();
+
+// create at least one new tab
+tabManager.addTab();
+
+
 const newTabButton = document.getElementById('newTabButton');
 
 // if user wants new tab
 newTabButton.addEventListener('click', () => {
-    // give them a new tab
-    makeNewTab();
-    isolateActiveTab();
-
+    tabManager.addTab();
 })

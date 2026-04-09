@@ -1,1 +1,7 @@
 layout.md
+style.md
+node_modules/
+.vscode
+package.json
+package-lock.json
+test/
