@@ -34,7 +34,7 @@ class TabManager {
     // creates new tab instances
     addTab() {
         // check if this is the first tab ever being made
-        const firstTab = this.activeTabId == null
+        const firstTab = (this.activeTabId == null)
         // increment the counter of new tabs that have been generated
         this.counter++;
         // define the id that the tab instance will get
