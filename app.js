@@ -101,6 +101,9 @@ class TabManager {
         this.tabs[toBeRemovedTabIndex].htmlBody.remove();
         this.tabs[toBeRemovedTabIndex].tabHandle.remove();
 
+        // kill the wave
+        this.tabs[toBeRemovedTabIndex].killWave();
+
         // delete the tab
         this.tabs.splice(toBeRemovedTabIndex, 1)
 
