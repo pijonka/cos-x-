@@ -436,9 +436,14 @@ class TabObj {
 // initialize a global tab manager
 let tabManager = new TabManager();
 
-// create at least one new tab
-tabManager.addTab();
-
+// if the url contains state
+if (window.location.hash) {
+    // load the state
+    loadStateFromUrl()
+} else {
+    // create at least one new tab
+    tabManager.addTab();
+}
 
 const newTabButton = document.getElementById('newTabButton');
 
