@@ -93,6 +93,8 @@ class TabManager {
             // give the lonely tab its close button back
             this.tabs[0].tabCloseButton.style.display = '';
         }
+        // save this in the new url
+        saveState()
     }
 
     // sets the passed tab as the active one by hiding the old active tab (if there was one) and displaying the new one
@@ -130,6 +132,9 @@ class TabManager {
             else // if there is no tab left to it
                 // set the active tab to the tab right of it
                 this.setActiveTab(this.tabs[activeTabIndex + 1].id);
+
+            // save this in the new url
+            saveState()
         }
 
         // remove html elements
@@ -236,6 +241,8 @@ class TabObj {
             if (this.active) {
                 this.oscillator.frequency.value = this.freq;
             }
+            // and save changes in the new url
+            saveState()
         });
 
         this.ampInit.addEventListener('input', () => {
@@ -244,10 +251,14 @@ class TabObj {
             if (this.active) {
                 this.gainNode.gain.setValueAtTime(this.amp, audioContext.currentTime);
             }
+            // and save changes in the new url
+            saveState()
         });
 
         this.phaseInit.addEventListener('input', () => {
             this.f();
+            // and save changes in the new url
+            saveState()
         });
 
         // END SECTION
