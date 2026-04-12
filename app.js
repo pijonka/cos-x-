@@ -14,6 +14,13 @@ let firstStartTime = null;
 const analyser = audioContext.createAnalyser();
 analyser.fftSize = 2048;
 
+// serialize url state
+function serializeState() {
+    return "#" + tabManager.tabs
+        .map(t => `${t.freq},${t.amp},${t.phase}`)
+        .join('|')
+}
+
 // define the TabManager class
 class TabManager {
 
