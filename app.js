@@ -14,11 +14,16 @@ let firstStartTime = null;
 const analyser = audioContext.createAnalyser();
 analyser.fftSize = 2048;
 
-// serialize url state
+// returns a hashed string with tab data for the url
 function serializeState() {
     return "#" + tabManager.tabs
         .map(t => `${t.freq},${t.amp},${t.phase}`)
         .join('|')
+}
+
+// updates tab state
+function saveState() {
+    history.replaceState(null, '', serializeState())
 }
 
 // define the TabManager class
