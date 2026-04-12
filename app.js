@@ -26,6 +26,29 @@ function saveState() {
     history.replaceState(null, '', serializeState())
 }
 
+function loadStateFromUrl() {
+    // extract behind the #
+    const hash = window.location.hash.slice(1);
+    // if the string is empty don't even bother
+    if (!hash) return;
+
+    // convert the format of the url to digestable data
+    const tabDefs = hash.split('|').map(s => {
+        const [freq, amp, phase] = s.split(',').map(Number);
+        return { freq, amp, phase };
+    });
+
+    // create tabs from url state instead of the default blank one
+    for (const def of tabDefs) {
+        tabManager.addTab();
+        const tab = tabManager.tabs[tabManager.tabs.length - 1];
+        tab.freqInit.value = def.freq;
+        tab.ampInit.value = def.amp;
+        tab.phaseInit.value = def.phase;
+        tab.f();
+    }
+}
+
 // define the TabManager class
 class TabManager {
 
