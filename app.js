@@ -256,6 +256,12 @@ class TabObj {
         });
 
         this.phaseInit.addEventListener('input', () => {
+            // if the wave is active
+            if (this.active) {
+                // note that the oscillator cannot change phase while active
+                // TODO make this visible in the html
+                console.log("Changes will not go into effect until the oscillator stops and resumes once");
+            }
             this.f();
             // and save changes in the new url
             saveState()
