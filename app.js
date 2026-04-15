@@ -445,6 +445,7 @@ if (window.location.hash) {
     tabManager.addTab();
 }
 
+// find the independent new tab button
 const newTabButton = document.getElementById('newTabButton');
 
 // if user wants new tab
