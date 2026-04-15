@@ -133,8 +133,6 @@ class TabManager {
                 // set the active tab to the tab right of it
                 this.setActiveTab(this.tabs[activeTabIndex + 1].id);
 
-            // save this in the new url
-            saveState()
         }
 
         // remove html elements
@@ -152,6 +150,8 @@ class TabManager {
             // hide the tab close button
             this.tabs[0].tabCloseButton.style.display = 'none';
         }
+        // save this in the new url
+        saveState()
     }
 }
 
