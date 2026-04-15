@@ -33,7 +33,7 @@ function loadStateFromUrl() {
     if (!hash) return;
 
     // convert the format of the url to digestable data
-    const tabDefs = hash.split('|').map(s => {
+    const tabDefs = hash.split('&').map(s => {
         const [freq, amp, phase] = s.split(',').map(Number);
         return { freq, amp, phase };
     });
