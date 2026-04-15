@@ -18,7 +18,7 @@ analyser.fftSize = 2048;
 function serializeState() {
     return "#" + tabManager.tabs
         .map(t => `${t.freq},${t.amp},${t.phase}`)
-        .join('|')
+        .join('&')
 }
 
 // updates tab state
