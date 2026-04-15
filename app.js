@@ -14,6 +14,41 @@ let firstStartTime = null;
 const analyser = audioContext.createAnalyser();
 analyser.fftSize = 2048;
 
+// returns a hashed string with tab data for the url
+function serializeState() {
+    return "#" + tabManager.tabs
+        .map(t => `${t.freq},${t.amp},${t.phase}`)
+        .join('&')
+}
+
+// updates tab state
+function saveState() {
+    history.replaceState(null, '', serializeState())
+}
+
+function loadStateFromUrl() {
+    // extract behind the #
+    const hash = window.location.hash.slice(1);
+    // if the string is empty don't even bother
+    if (!hash) return;
+
+    // convert the format of the url to digestable data
+    const tabDefs = hash.split('&').map(s => {
+        const [freq, amp, phase] = s.split(',').map(Number);
+        return { freq, amp, phase };
+    });
+
+    // create tabs from url state instead of the default blank one
+    for (const def of tabDefs) {
+        tabManager.addTab();
+        const tab = tabManager.tabs[tabManager.tabs.length - 1];
+        tab.freqInit.value = def.freq;
+        tab.ampInit.value = def.amp;
+        tab.phaseInit.value = def.phase;
+        tab.f();
+    }
+}
+
 // define the TabManager class
 class TabManager {
 
@@ -58,6 +93,8 @@ class TabManager {
             // give the lonely tab its close button back
             this.tabs[0].tabCloseButton.style.display = '';
         }
+        // save this in the new url
+        saveState()
     }
 
     // sets the passed tab as the active one by hiding the old active tab (if there was one) and displaying the new one
@@ -95,6 +132,7 @@ class TabManager {
             else // if there is no tab left to it
                 // set the active tab to the tab right of it
                 this.setActiveTab(this.tabs[activeTabIndex + 1].id);
+
         }
 
         // remove html elements
@@ -112,6 +150,8 @@ class TabManager {
             // hide the tab close button
             this.tabs[0].tabCloseButton.style.display = 'none';
         }
+        // save this in the new url
+        saveState()
     }
 }
 
@@ -201,6 +241,8 @@ class TabObj {
             if (this.active) {
                 this.oscillator.frequency.value = this.freq;
             }
+            // and save changes in the new url
+            saveState()
         });
 
         this.ampInit.addEventListener('input', () => {
@@ -209,10 +251,20 @@ class TabObj {
             if (this.active) {
                 this.gainNode.gain.setValueAtTime(this.amp, audioContext.currentTime);
             }
+            // and save changes in the new url
+            saveState()
         });
 
         this.phaseInit.addEventListener('input', () => {
+            // if the wave is active
+            if (this.active) {
+                // note that the oscillator cannot change phase while active
+                // TODO make this visible in the html
+                console.log("Changes will not go into effect until the oscillator stops and resumes once");
+            }
             this.f();
+            // and save changes in the new url
+            saveState()
         });
 
         // END SECTION
@@ -384,10 +436,16 @@ class TabObj {
 // initialize a global tab manager
 let tabManager = new TabManager();
 
-// create at least one new tab
-tabManager.addTab();
+// if the url contains state
+if (window.location.hash) {
+    // load the state
+    loadStateFromUrl()
+} else {
+    // create at least one new tab
+    tabManager.addTab();
+}
 
-
+// find the independent new tab button
 const newTabButton = document.getElementById('newTabButton');
 
 // if user wants new tab
