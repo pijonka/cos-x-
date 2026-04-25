@@ -1,6 +1,6 @@
 # Cos(x), a tab-based sound wave generator
 
-<img src="screenshot.png">
+<img src="src/assets/screenshot.png">
 
 Cos(x) is a web app that audibly and visually generates sound waves with a set frequency, amplitude, and phase. You can create and delete instances of mulitple sound waves, which can be stacked on top of each other to hear and visualize different combinations of sound waves. Sessions are saved in the URL of the website, and can be copied and stored for later usage by pasting the URL back into a search bar.
 
