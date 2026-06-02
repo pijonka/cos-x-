@@ -1,0 +1,25 @@
+{
+  "name": "cos-x-",
+  "version": "1.0.0",
+  "description": "A tab-based sound wave generator",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pijonka/cos-x-.git"
+  },
+  "keywords": [],
+  "author": "pijonka",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/pijonka/cos-x-/issues"
+  },
+  "homepage": "https://github.com/pijonka/cos-x-#readme",
+  "devDependencies": {
+    "vite": "^8.0.16"
+  }
+}
