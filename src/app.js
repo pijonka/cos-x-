@@ -108,12 +108,12 @@ class TabManager {
             // hide the old active tab
             this.tabs[currentActiveTabIndex].htmlBody.style.display = 'none';
             // and remove the tab handle active tab class in css
-            this.tabs[currentActiveTabIndex].tabHandle.querySelector('.tabActiveButton').classList.remove('activeTab');
+            this.tabs[currentActiveTabIndex].tabHandle.querySelector('.tabOpenButton').classList.remove('activeTab');
         }
         // in either case, display the html body of the new active tab,
         this.tabs[toBeActiveTabIndex].htmlBody.style.display = 'block';
         // add the active tab class to the tab handle,
-        this.tabs[toBeActiveTabIndex].tabHandle.querySelector('.tabActiveButton').classList.add('activeTab');
+        this.tabs[toBeActiveTabIndex].tabHandle.querySelector('.tabOpenButton').classList.add('activeTab');
         // and set the new active tab
         this.activeTabId = id;
     }
@@ -184,7 +184,7 @@ class TabObj {
         // define the tab handle html
         this.tabHandle = document.createElement('div');
         this.tabHandle.innerHTML = `
- <a class="tabActiveButton">${this.name}</a><button class="tabCloseButton">X</button>
+ <a class="tabOpenButton">${this.name}</a><button class="tabCloseButton">X</button>
         `;
 
         // grab references
@@ -195,7 +195,7 @@ class TabObj {
         this.activeButton = this.htmlBody.querySelector('.activeButton');
         this.formulaDisplay = this.htmlBody.querySelector('.f');
         /// and the tab handle
-        this.tabActiveButton = this.tabHandle.querySelector('.tabActiveButton');
+        this.tabOpenButton = this.tabHandle.querySelector('.tabOpenButton');
         this.tabCloseButton = this.tabHandle.querySelector('.tabCloseButton');
 
         // define other object variables 
@@ -216,12 +216,13 @@ class TabObj {
 
     }
 
+    // dynamically retrieve DOM input values to numbers
     get freq() { return Number(this.freqInit.value); }
     get amp() { return Number(this.ampInit.value); }
     get phase() { return Number(this.phaseInit.value); }
 
     initListeners() {
-        // manage the state of the tab
+        // active button manages tab activeness
         this.activeButton.addEventListener('click', async () => {
             // wait until the audio context is ready to play
             if (audioContext.state === 'suspended')
@@ -234,7 +235,6 @@ class TabObj {
             }
         })
 
-        // SECTION html body schedulers
         this.freqInit.addEventListener('input', () => {
             this.f();
             // also update the frequency value of the running oscillator if it's running
@@ -267,10 +267,7 @@ class TabObj {
             saveState()
         });
 
-        // END SECTION
-
-        // SECTION active button and close button schedulers
-        this.tabActiveButton.addEventListener('click', () => {
+        this.tabOpenButton.addEventListener('click', () => {
             // set tab manager's active tab to this one
             tabManager.setActiveTab(this.id);
         })
@@ -339,6 +336,7 @@ class TabObj {
         const canvasContext = canvas.getContext('2d');
 
         function draw() {
+            // schedule the function at every frame
             requestAnimationFrame(draw);
 
             analyser.getByteTimeDomainData(dataArray);
@@ -379,6 +377,7 @@ class TabObj {
     createWaveAtStart() {
         // checks whether there has already been a first oscillator that passed firstStartTime
         if (!firstStartTime)
+            // if so, define the first start time as an anchor point for future new waves
             firstStartTime = audioContext.currentTime
 
         // conversion from phase in degrees to phase in seconds (take how much it fits INTO 360 degrees)
@@ -418,22 +417,8 @@ class TabObj {
         this.activeButton.textContent = this.inactiveButtonLabel;
     }
 
-    // define active button function?
-
-    // define tab handle function
-
-    // define activate wave function
 }
 
-// function makeNewTab() {
-//     const newTab = new TabObj
-//     tabArray.push(newTab);
-//     tabsContainer.appendChild(newTab.htmlBody);
-// }
-// makeNewTab();
-// isolateActiveTab();
-
-// initialize a global tab manager
 let tabManager = new TabManager();
 
 // if the url contains state
@@ -450,5 +435,6 @@ const newTabButton = document.getElementById('newTabButton');
 
 // if user wants new tab
 newTabButton.addEventListener('click', () => {
+    // add a new tab
     tabManager.addTab();
 })
